@@ -1,0 +1,15 @@
+<h2>Login Page</h2>
+<form [formGroup]="loginForm" (submit)="login(loginForm.value)">
+  <fieldset>
+    Username: <input type="text" name="username" id="username" placeholder="Username" formControlName="userName"><br>
+    <div *ngIf="usernameValidation(loginForm.controls['userName'])">{{usernameMessage}}
+    </div>
+    <br><br>
+    Password: <input type="password" name="password" id="password" placeholder="Password" formControlName="password">
+    <div *ngIf="passwordValidation(loginForm.controls['password'])">{{passwordMessage}}</div>
+    <br><br>
+    <input type="checkbox" formControlName="isRemember">Stay signed in <br><br>
+    <button type="submit" value="Login">Login</button>
+    <br><br>
+  </fieldset>
+</form>

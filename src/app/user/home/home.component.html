@@ -1,0 +1,89 @@
+
+<fieldset *ngIf="showForm"><br>
+
+  <form [formGroup]="numberForm" >
+    <br><br>
+    First Name: <input type="text" placeholder="First Name" formControlName="firstName"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    Last Name: <input type="text" placeholder="Last Name" formControlName="lastName"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    User Name: <input type="text" formControlName="userName" disabled><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    <fieldset>
+    Country: <select formControlName="country" (change)="onSelectCountry($event.target.value)">
+    <!--<option value="" disabled>Select Country</option>-->
+    <option *ngFor="let country of countryList" value={{country.dial_code}}>{{country.name}}</option>
+  </select>
+      <!--<br>-->
+    <!--<div *ngIf="countryValidation(numberForm.controls['country_id'])">{{countryMessage}}</div>-->
+    <br><br>
+
+      Country Code: <input type="text" formControlName="countryCode">
+    </fieldset>
+
+    Email: <input type="text" placeholder="Email Id" formControlName="email">
+    <br><br>
+
+    Contact No.: <input type="text" formControlName="contactNo">
+    <br><br>
+
+      <input type="text" formControlName="userType" hidden>
+      <input type="text" formControlName="userId" hidden>
+      <input type="text" formControlName="discount" hidden>
+      <input type="text" formControlName="subscriptionPlanId" hidden>
+    <br><br>
+
+    <button type="submit" (click)="updateData(numberForm.value)">{{ 'Update' }}</button>
+    <button type="reset" (click)="goPrev()">Cancel</button>
+  </form>
+</fieldset>
+<br><br>
+
+<div *ngIf="showTable">
+  <table border="1">
+    <tr>
+      <th>Index</th>
+      <th>Client Id</th>
+      <th>Name</th>
+      <th>UserName</th>
+      <th>Email</th>
+      <th>Country</th>
+      <th>Phone no</th>
+      <th>Active Package</th>
+      <th>Sub. Status</th>
+      <th>Status</th>
+      <th>Update</th>
+    </tr>
+
+    <tr
+      *ngFor="let numberInfo of numberList; let i = index">
+      <td>{{i + 1}}</td>
+      <td>{{numberInfo.customerId}}</td>
+      <td>{{numberInfo.firstName + " " + numberInfo.lastName}}</td>
+      <td>{{numberInfo.userName}}</td>
+      <td>{{numberInfo.email}}</td>
+      <td>{{numberInfo.country}}</td>
+      <td>{{numberInfo.countryCode + "-" + numberInfo.contactNo}}</td>
+      <td>{{numberInfo.subscriptionName}}</td>
+      <td>{{numberInfo.isSubscriptionActive}}</td>
+      <td>{{numberInfo.isEnable}}</td>
+      <td>
+      <button (click)="showProperty(numberInfo)">Edit</button>
+      </td>
+      <!--<td>-->
+      <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
+      <!--</td>-->
+    </tr>
+  </table>
+
+  <!--<app-pagination *ngIf="showTable" (pageChange)="p = $event;getUserData()"-->
+  <!--(numberChange)="onChange($event)"></app-pagination>-->
+</div>
+
+
