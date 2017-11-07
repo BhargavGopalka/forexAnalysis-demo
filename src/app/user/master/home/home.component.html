@@ -11,7 +11,7 @@
     <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
 
-    User Name: <input type="text" formControlName="userName" disabled><br>
+    User Name: <input type="text" formControlName="userName"><br>
     <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
 
@@ -62,7 +62,7 @@
     </tr>
 
     <tr
-      *ngFor="let numberInfo of numberList; let i = index">
+      *ngFor="let numberInfo of numberList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
       <td>{{i + 1}}</td>
       <td>{{numberInfo.customerId}}</td>
       <td>{{numberInfo.firstName + " " + numberInfo.lastName}}</td>
@@ -82,8 +82,6 @@
     </tr>
   </table>
 
-  <!--<app-pagination *ngIf="showTable" (pageChange)="p = $event;getUserData()"-->
-  <!--(numberChange)="onChange($event)"></app-pagination>-->
+  <app-pagination *ngIf="showTable" (pageChange)="p = $event;getUserData()"
+  (numberChange)="onChange($event)"></app-pagination>
 </div>
-
-

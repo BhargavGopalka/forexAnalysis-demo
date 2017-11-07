@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiManagerService} from '../../utility/shared-service/api-manager.service';
+import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Constant} from '../../utility/constants/constants';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {Constant} from '../../../utility/constants/constants';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -41,36 +41,31 @@ export class HomeComponent implements OnInit {
   }
 
   initial(numberData: any) {
-    this.numberForm = this.fb.group({
-      firstName: [numberData.firstName],
-      lastName: [numberData.lastName],
-      userName: [numberData.userName],
-      country: [numberData.country],
-      countryCode: [numberData.countryCode],
-      email: [numberData.email],
-      contactNo: [numberData.contactNo],
-      userType: [numberData.userType],
-      discount: [numberData.discount],
-      userId: [numberData.decoded.userId],
-      subscriptionPlanId: [numberData.subscriptionPlanId]
+    this.numberForm = new FormGroup({
+      firstName: new FormControl(numberData.firstName),
+      lastName: new FormControl(numberData.lastName),
+      userName: new FormControl({value: numberData.userName, disabled: true}),
+      country: new FormControl(numberData.country),
+      countryCode: new FormControl(numberData.countryCode),
+      email: new FormControl(numberData.email),
+      contactNo: new FormControl(numberData.contactNo),
+      userType: new FormControl(numberData.userType),
+      discount: new FormControl(numberData.discount),
+      userId: new FormControl(numberData.decoded.userId),
+      subscriptionPlanId: new FormControl(numberData.subscriptionPlanId)
     });
   }
 
   getUserData() {
-    this.http.get(Constant.baseUrl + `api/admin/customer/getUsers?limit=${this.pageItems}&page=${this.p}`, {
-      headers: new HttpHeaders().set('x-access-token', sessionStorage.getItem('currentUser')),
-    })
+    this.apiService.getAPI(`api/admin/customer/getUsers?limit=${this.pageItems}&page=${this.p}`)
       .subscribe((res: any) => {
-        // console.log(res);
         this.tPage = res.pager.totalRecords;
         this.numberList = res.data.customers;
       });
   }
 
   updateData(formValue: any) {
-    this.http.post(Constant.baseUrl + `api/admin/customer/updateUser`, formValue, {
-      headers: new HttpHeaders().set('x-access-token', sessionStorage.getItem('currentUser')),
-    })
+    this.apiService.postAPI(`api/admin/customer/updateUser`, formValue)
       .subscribe(() => {
           this.getUserData();
           this.showTable = true;

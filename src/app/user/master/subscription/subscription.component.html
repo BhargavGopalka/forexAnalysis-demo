@@ -1,0 +1,92 @@
+<br>
+
+<button (click)="showProperty(null)">Add</button>
+<br>
+
+<fieldset *ngIf="showForm"><br>
+  <form [formGroup]="subscribeForm" (submit)="addSubscription(subscribeForm.value, subscribeForm.valid)">
+    <br>
+    <h3>Subscription Plans</h3>
+    <hr>
+
+    <br><br>
+    Name: <input type="text" placeholder="Name" formControlName="name"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    Plan Type: <select formControlName="planType">
+    <option value="" disabled>Plan Type</option>
+    <option value="1">Signal</option>
+    <option value="2">Trading Guide</option>
+    <option value="3">Complete</option>
+  </select><br><br>
+
+    Description: <textarea rows="8" cols="150" type="text" placeholder="description"
+                           formControlName="description"></textarea><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    Duration: <select formControlName="duration">
+    <option value="" disabled>Duration</option>
+    <option value="30">Monthly</option>
+    <option value="90">Quarterly</option>
+    <option value="180">Half Yearly</option>
+    <option value="365">Yearly</option>
+  </select><br><br>
+
+    Price: <input type="text" placeholder="Price" formControlName="price" (change)="selectPrice($event.target.value)"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    Discount: <input type="text" placeholder="Discount" formControlName="discount" (change)="selectDiscount($event.target.value)"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    Discounted Price: <input type="text" placeholder="Discounted Price" formControlName="discountedPrice" value="{{afterDiscountPrice}}"><br>
+    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+    <br><br>
+
+    <input type="text" formControlName="planId" hidden>
+
+    <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
+    <button type="reset" (click)="goPrev()">Cancel</button>
+  </form>
+</fieldset>
+<br><br>
+
+<div *ngIf="showTable">
+  <table border="1">
+    <tr>
+      <th>Index</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Duration</th>
+      <th>Plan Type</th>
+      <th>Price</th>
+      <th>Discount</th>
+      <th>Discount Price</th>
+      <th>Update</th>
+    </tr>
+
+    <tr
+      *ngFor="let ssInfo of ssList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      <td>{{i + 1}}</td>
+      <td>{{ssInfo.name}}</td>
+      <td>{{ssInfo.description}}</td>
+      <td>{{ssInfo.duration + ' Days'}}</td>
+      <td>{{ssInfo.planName}}</td>
+      <td>{{'$' + ssInfo.price}}</td>
+      <td>{{ssInfo.discount + '%'}}</td>
+      <td>{{'$' + ssInfo.discountedPrice}}</td>
+      <td>
+        <button (click)="showProperty(ssInfo)">Edit</button>
+      </td>
+      <!--<td>-->
+      <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
+      <!--</td>-->
+    </tr>
+  </table>
+
+  <app-pagination *ngIf="showTable" (pageChange)="p = $event;getSubScription()"
+  (numberChange)="onChange($event)"></app-pagination>
+</div>

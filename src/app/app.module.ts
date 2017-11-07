@@ -9,6 +9,8 @@ import {UserModule} from './user/user.module';
 import {UtilityModule} from './utility/utility.module';
 import {AuthGuard} from './_guards/auth.guards';
 import {NgxPaginationModule} from 'ngx-pagination';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     UtilityModule,
     HttpClientModule,
     NgxPaginationModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     AppRoutingModule
   ],
   providers: [AuthGuard],

@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Constant} from '../../utility/constants/constants';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,10 @@ export class LoginComponent implements OnInit {
   passwordMessage: string;
   usernameMessage: string;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private routes: Router) {
+  constructor(private fb: FormBuilder,
+              private http: HttpClient,
+              private routes: Router,
+              private toastr: ToastrService) {
   }
 
   ngOnInit() {
@@ -23,10 +27,10 @@ export class LoginComponent implements OnInit {
   }
 
   generateForm() {
-    this.loginForm = this.fb.group({
-      userName: ['', [Validators.required, Validators.minLength(2)]],
-      password: ['', [Validators.required, Validators.maxLength(10)]],
-      isRemember: [false]
+    this.loginForm = new FormGroup({
+      userName: new FormControl('', {validators: [Validators.required, Validators.minLength(2)]}),
+      password: new FormControl('', {validators: [Validators.required, Validators.maxLength(10)]}),
+      isRemember: new FormControl(false)
     });
   }
 
@@ -66,6 +70,7 @@ export class LoginComponent implements OnInit {
       })
         .subscribe((res: any) => {
             console.log(res);
+            this.toastr.success('Welcome!');
             const token = res.token;
             sessionStorage.setItem('currentUser', token);
             if (res.status === 200) {

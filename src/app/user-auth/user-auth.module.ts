@@ -5,6 +5,8 @@ import {UserAuthRoutingModule} from './user-auth-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {UserModule} from "../user/user.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ToastrModule} from "ngx-toastr";
 
 @NgModule({
   imports: [
@@ -13,6 +15,8 @@ import {UserModule} from "../user/user.module";
     ReactiveFormsModule,
     HttpClientModule,
     UserModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     UserAuthRoutingModule
   ],
   declarations: [LoginComponent],
