@@ -1,0 +1,122 @@
+<div *ngIf="peopleHide">
+
+  <div>
+    <h4>Coupon Code Management</h4>
+    <hr>
+    <br><br>
+  </div>
+
+  <!--Add Form-->
+  <div>
+    <button (click)="showProperty(null)">Add</button>
+    <br><br>
+
+    <fieldset *ngIf="showForm"><br>
+      <form [formGroup]="couponForm" (submit)="addCoupon(couponForm.value, couponForm.valid)">
+        <br><br>
+        Campaign Name: <input type="text" placeholder="Campaign Name" formControlName="campaignName"><br>
+        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+        <br><br>
+
+        Plan Type: <select formControlName="planType" (change)="onSelectPlanType($event.target.value)">
+        <option value="" disabled>Select Plan Type</option>
+        <option *ngFor="let plan of planTypeList" value={{plan.key}}>{{plan.name}}</option>
+        <option value="4">Any</option>
+      </select><br><br>
+
+        Duration: <select formControlName="duration">
+        <option value="" disabled>Duration</option>
+        <option *ngFor="let dur of selectedDuration">{{dur.name}}</option>
+      </select><br><br>
+
+        <input type="date" placeholder="From Date" formControlName="validFrom"><br>
+        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+        <br><br>
+
+        <input type="date" placeholder="To Date" formControlName="validTo"><br>
+        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+        <br><br>
+
+        Discount: <input type="text" placeholder="Discount(%)" formControlName="discount">
+        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+        <br><br>
+
+        <input type="text" formControlName="id" value="_id" hidden>
+
+        <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
+        <button type="reset" (click)="goPrev()">Cancel</button>
+      </form>
+    </fieldset>
+    <br><br>
+  </div>
+
+
+  <!--Coupon Page Data-->
+  <div *ngIf="showTable">
+    <table border="1">
+      <tr>
+        <th>Campaign Name</th>
+        <th>Plan Type</th>
+        <th>Duration</th>
+        <th>Validity</th>
+        <th>Discount</th>
+        <th></th>
+        <th>Delete</th>
+        <th>Update</th>
+      </tr>
+
+      <tr
+        *ngFor="let coupon of couponsList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+        <td>{{coupon.campaignName}}</td>
+        <td>{{coupon.planName}}</td>
+        <td>{{coupon.duration + ' ' + 'Days'}}</td>
+        <td>{{(coupon.fromDateString | date: 'dd/MM/yyyy') + ' - ' + (coupon.toDateString | date: 'dd/MM/yyyy')}}</td>
+        <td>{{(coupon.discount | number : '1.0-2') + ' % '}}</td>
+        <td>
+          <button (click)="addPeople(coupon._id)">Add People</button>
+        </td>
+        <td>
+          <button (click)="removeCoupon(coupon._id, i)">Delete</button>
+        </td>
+        <td>
+          <button (click)="showProperty(coupon)">Edit</button>
+        </td>
+        <!--<td>-->
+        <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
+        <!--</td>-->
+      </tr>
+    </table>
+
+    <app-pagination *ngIf="showTable" (pageChange)="p = $event;getCoupon()"
+                    (numberChange)="onChange($event)"></app-pagination>
+  </div>
+
+</div>
+
+<div *ngIf="peoplePage">
+  <br>
+  <div>
+    <h3>People</h3>
+    <hr>
+  </div>
+
+  <br>
+  <table border="1">
+    <tr>
+      <th>Email</th>
+      <th>Coupon Code</th>
+      <th>Discount</th>
+    </tr>
+
+    <tr *ngFor="let people of peopleList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      <td>{{people.email}}</td>
+      <td>{{people.coupan}}</td>
+      <td>{{(people.discount | number : '1.0-2') + ' % '}}</td>
+    </tr>
+  </table>
+
+  <app-pagination (numberChange)="onPeopleNumber($event)"></app-pagination>
+<br>
+  <button (click)="goBack()">Back</button>
+
+</div>

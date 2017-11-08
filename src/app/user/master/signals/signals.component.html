@@ -1,0 +1,56 @@
+<br><br>
+
+<div>
+<a><h2>Active Signals({{activeRecord}})</h2></a>
+<hr>
+</div>
+
+<div>
+<a><h2>Pending Signals({{pendingRecord}})</h2></a>
+<hr>
+</div>
+
+<div>
+<a><h2>Closed Signals({{closedRecord}})</h2></a>
+<hr>
+</div>
+
+<div>
+  <table border="1">
+    <tr>
+      <th>Signal ID</th>
+      <th>Time</th>
+      <th>Instrument</th>
+      <th>Action</th>
+      <th>Range</th>
+      <th>S.L.</th>
+      <th>ETD</th>
+      <th>TP1</th>
+      <th>TP2</th>
+      <th>Closing Price</th>
+      <th>Status</th>
+      <th>Update</th>
+    </tr>
+
+    <tr
+      *ngFor="let signal of signalsList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      <td>{{signal.signalId}}</td>
+      <td>{{signal.createDate}}</td>
+      <td>{{signal.instrumentType}}</td>
+      <td>{{signal.action}}</td>
+      <td>{{signal.minEntryRange}}</td>
+      <td>{{signal.stopLoss}}</td>
+      <td>{{signal.etd}}</td>
+      <td>{{signal.takeProfit1}}</td>
+      <td>{{signal.takeProfit2}}</td>
+      <td>{{signal.bid}}</td>
+      <td>
+        <button (click)="showProperty(ssInfo)">Edit</button>
+      </td>
+      <!--<td>-->
+      <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
+      <!--</td>-->
+    </tr>
+  </table>
+
+</div>

@@ -71,7 +71,7 @@ export class ApiManagerService {
   }
 
   /* Add record */
-  postAPI(endpoint: string, formVal: any): Observable<any> {
+  postAPI(endpoint: string, formVal?: any): Observable<any> {
     this.showLoader();
     return this.http.post(Constant.baseUrl + endpoint, formVal, {
       headers: new HttpHeaders().set('x-access-token', sessionStorage.getItem('currentUser')),
