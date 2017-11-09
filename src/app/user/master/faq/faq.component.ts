@@ -59,7 +59,11 @@ export class FaqComponent implements OnInit {
   searchDep(value: string) {
     const searchAnswer = {'answers': -1};
     // ApiEndpoints.Department + `?records=all&sortBy=department&sortOrder=asc&search=${JSON.stringify(searchName)}
-    this.apiService.getAPI(`api/admin/faqs/getAll?page=${this.p}&limit=${this.pageItems}&sort=${JSON.stringify(searchAnswer)}&search=${value}&`)
+    this.apiService.getAPI(`api/admin/faqs/getAll?
+    page=${this.p}&
+    limit=${this.pageItems}&
+    sort=${JSON.stringify(searchAnswer)}&
+    search=${value}&`)
       .subscribe(res => {
         this.faqList = res.data.faqs;
         // console.log(this.departmentList);

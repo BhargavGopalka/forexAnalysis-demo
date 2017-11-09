@@ -7,7 +7,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-  RecordsPerPage: any[] = [10, 20, 30];
+  public static RecordsPerPage: any[] = [10, 20, 30];
 
   @Output() pageChange: EventEmitter<number> = new EventEmitter();
 

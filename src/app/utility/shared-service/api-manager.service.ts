@@ -54,6 +54,22 @@ export class ApiManagerService {
       });
   }
 
+  /*Get Api with static header*/
+  getHeaderAPI(endpoint: string): Observable<any> {
+    this.showLoader();
+    return this.http.get(Constant.baseUrl + endpoint, {
+      headers: new HttpHeaders().set('x-access-token', `2e53a2427762250dfa56096ecab1b3b6`),
+    })
+      .catch(this.onCatch)
+      .map(res => {
+        this.extractData(res, false);
+        return res;
+      })
+      .finally(() => {
+        this.hideLoader();
+      });
+  }
+
   /* Delete record */
   deleteAPI(endpoint: string): Observable<any> {
     this.showLoader();

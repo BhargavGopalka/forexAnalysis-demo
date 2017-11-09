@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Constant} from '../../../utility/constants/constants';
+import {HttpClient} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {PaginationComponent} from '../../../utility/shared-components/pagination/pagination.component';
 
 @Component({
   selector: 'app-home',
@@ -11,18 +11,17 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
 
+  // pagination array
   p = 1;
   tPage = null;
-  pageItems = 10;
+  pageItems = PaginationComponent.RecordsPerPage[0];
 
   showTable = true;
   showForm = false;
 
   numberList = [];
   countryList = [];
-
   numberForm: FormGroup;
-
 
   constructor(private apiService: ApiManagerService,
               private http: HttpClient,
@@ -30,6 +29,11 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initializeMethod();
+    console.log(this.pageItems);
+  }
+
+  initializeMethod() {
     this.getUserData();
     this.getCountry();
   }
@@ -37,22 +41,23 @@ export class HomeComponent implements OnInit {
   showProperty(numberData: any) {
     this.showForm = true;
     this.showTable = false;
+    console.log(numberData);
     this.initial(numberData);
   }
 
   initial(numberData: any) {
     this.numberForm = new FormGroup({
-      firstName: new FormControl(numberData.firstName),
-      lastName: new FormControl(numberData.lastName),
-      userName: new FormControl({value: numberData.userName, disabled: true}),
-      country: new FormControl(numberData.country),
-      countryCode: new FormControl(numberData.countryCode),
-      email: new FormControl(numberData.email),
-      contactNo: new FormControl(numberData.contactNo),
-      userType: new FormControl(numberData.userType),
-      discount: new FormControl(numberData.discount),
-      userId: new FormControl(numberData.decoded.userId),
-      subscriptionPlanId: new FormControl(numberData.subscriptionPlanId)
+      firstName: new FormControl(numberData.firstName ? numberData.firstName : ''),
+      lastName: new FormControl(numberData.lastName ? numberData.lastName : ''),
+      userName: new FormControl({value: numberData.userName ? numberData.userName : '', disabled: true}),
+      country: new FormControl(numberData.countryCode ? numberData.countryCode : ''),
+      countryCode: new FormControl(numberData.countryCode ? numberData.countryCode : ''),
+      email: new FormControl(numberData.email ? numberData.email : ''),
+      contactNo: new FormControl(numberData.contactNo ? numberData.contactNo : ''),
+      userType: new FormControl(numberData.userType ? numberData.userType : ''),
+      discount: new FormControl(numberData.discount ? numberData.discount : ''),
+      userId: new FormControl(numberData.decoded.userId ? numberData.decoded.userId : ''),
+      subscriptionPlanId: new FormControl(numberData.subscriptionPlanId ? numberData.subscriptionPlanId : '')
     });
   }
 
@@ -77,15 +82,10 @@ export class HomeComponent implements OnInit {
   }
 
   getCountry() {
-    if (this.countryList.length === 0) {
-      const url = `public/config`;
-      this.http.get(Constant.baseUrl + url, {
-        headers: new HttpHeaders().set('x-access-token', `2e53a2427762250dfa56096ecab1b3b6`),
-      })
-        .subscribe((res: any) => {
-          this.countryList = res.data.country;
-        });
-    }
+    this.apiService.getHeaderAPI(`public/config`)
+      .subscribe((res: any) => {
+        this.countryList = res.data.country;
+      });
   }
 
   onSelectCountry(value: string) {

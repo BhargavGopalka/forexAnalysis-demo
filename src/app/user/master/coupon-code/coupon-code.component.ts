@@ -124,6 +124,7 @@ export class CouponCodeComponent implements OnInit {
       })
         .subscribe((res: any) => {
           this.selectedDuration = res.data.duration;
+          this.anyDurationList();
         });
     } else {
       this.selectedDuration = this.allDuration.filter(duration => {
@@ -131,6 +132,13 @@ export class CouponCodeComponent implements OnInit {
       });
     }
     return this.selectedDuration;
+  }
+
+  anyDurationList() {
+    for (let i = 0; i < this.selectedDuration.length; i++) {
+      this.selectedDuration[i].duration = this.selectedDuration[i]['day'];
+      delete this.selectedDuration[i].key1;
+    }
   }
 
   /*Getting Duration List*/

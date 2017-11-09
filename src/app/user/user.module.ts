@@ -14,6 +14,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatFormFieldModule, MatInputModule, MatNativeDateModule} from '@angular/material';
 import {FaqComponent} from './master/faq/faq.component';
+import { LatestNewsComponent } from './master/latest-news/latest-news.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import {FaqComponent} from './master/faq/faq.component';
     SignalsComponent,
     TradingGuideComponent,
     CouponCodeComponent,
-    FaqComponent
+    FaqComponent,
+    LatestNewsComponent
   ],
   exports: [HomeComponent, HeaderComponent]
 })
