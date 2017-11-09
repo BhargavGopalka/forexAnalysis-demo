@@ -1,0 +1,58 @@
+<div>
+  <br>
+  <h4>FAQ</h4>
+  <hr>
+  <br>
+  <div>
+    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchDep(searchBox.value)"/>
+  </div>
+  <br>
+</div>
+
+<!--Add FAQ data-->
+<div>
+  <button (click)="showProperty(null)">Add</button>
+  <br><br>
+
+  <fieldset *ngIf="showForm"><br>
+    <form [formGroup]="faqForm" (submit)="addFaq(faqForm.value)">
+      <br><br>
+      Question: <textarea rows="8" cols="150" type="text" formControlName="question"></textarea><br><br>
+
+      Answer: <textarea rows="8" cols="150" type="text" formControlName="answers"></textarea><br><br>
+
+      <input type="text" formControlName="id" value="_id" hidden>
+
+      <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
+      <button type="reset" (click)="goPrev()">Cancel</button>
+    </form>
+  </fieldset>
+  <br><br>
+</div>
+
+<!-- FAQ Data Table-->
+<div *ngIf="showTable">
+  <table border="1">
+    <tr>
+      <th>Question</th>
+      <th>Answer</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+
+    <tr
+      *ngFor="let faq of faqList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      <td>{{faq.question}}</td>
+      <td>{{faq.answers}}</td>
+      <td>
+        <button (click)="showProperty(faq)">Edit</button>
+      </td>
+      <td>
+        <button (click)="removeCoupon(faq._id, i)">Delete</button>
+      </td>
+    </tr>
+  </table>
+
+  <app-pagination *ngIf="showTable" (pageChange)="p = $event; getFaq()"
+                  (numberChange)="onChange($event)"></app-pagination>
+</div>

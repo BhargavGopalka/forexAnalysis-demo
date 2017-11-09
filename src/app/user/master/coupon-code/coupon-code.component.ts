@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-coupon-code',
@@ -20,6 +21,8 @@ export class CouponCodeComponent implements OnInit {
   peopleHide = true;
 
   existingData = null;
+  minDate = new Date();
+  MinimumDate: any;
 
   couponsList = [];
   peopleList = [];
@@ -66,6 +69,11 @@ export class CouponCodeComponent implements OnInit {
     this.existingData = couponData;
   }
 
+  addEvent(event: MatDatepickerInputEvent<Date>) {
+    this.couponForm.patchValue({validTo: ''});
+    this.MinimumDate = event.value;
+  }
+
   addCoupon(formValue: any) {
     if (this.existingData == null) {
       this.apiService.postAPI(`api/admin/coupanCode/add`, formValue)
@@ -93,6 +101,7 @@ export class CouponCodeComponent implements OnInit {
   getCoupon() {
     this.apiService.getAPI(`api/admin/coupanCode/getAll?page=${this.p}&limit=${this.pageItems}&`)
       .subscribe((res: any) => {
+        this.tPage = res.pager.totalRecords;
         this.couponsList = res.data.campaign;
       });
   }
@@ -148,7 +157,6 @@ export class CouponCodeComponent implements OnInit {
         this.allDuration.push(b);
       }
     }
-    console.log(this.allDuration);
     /*Method number 2 */
     // this.allDuration = this.durationList.reduce((a, b) => a.concat(b));
   }
@@ -178,6 +186,12 @@ export class CouponCodeComponent implements OnInit {
   goPrev() {
     this.showForm = false;
     this.showTable = true;
+  }
+
+  onChange(value) {
+    this.p = 1;
+    this.pageItems = +value;
+    this.getCoupon();
   }
 
 }

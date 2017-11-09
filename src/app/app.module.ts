@@ -11,6 +11,8 @@ import {AuthGuard} from './_guards/auth.guards';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import {ToastrModule} from 'ngx-toastr';
     ReactiveFormsModule,
     UserAuthModule,
     UserModule,
+    MatDatepickerModule,
     UtilityModule,
     HttpClientModule,
     NgxPaginationModule,

@@ -7,6 +7,7 @@ import {SubscriptionComponent} from "./master/subscription/subscription.componen
 import {SignalsComponent} from "./master/signals/signals.component";
 import {TradingGuideComponent} from "./master/trading-guide/trading-guide.component";
 import {CouponCodeComponent} from "./master/coupon-code/coupon-code.component";
+import {FaqComponent} from "./master/faq/faq.component";
 
 const routes: Routes = [
   {
@@ -37,6 +38,11 @@ const routes: Routes = [
   {
     path: 'coupon',
     component: CouponCodeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'faq',
+    component: FaqComponent,
     canActivate: [AuthGuard]
   }
 ];

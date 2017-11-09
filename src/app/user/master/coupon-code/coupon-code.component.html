@@ -12,7 +12,7 @@
     <br><br>
 
     <fieldset *ngIf="showForm"><br>
-      <form [formGroup]="couponForm" (submit)="addCoupon(couponForm.value, couponForm.valid)">
+      <form [formGroup]="couponForm" (submit)="addCoupon(couponForm.value)">
         <br><br>
         Campaign Name: <input type="text" placeholder="Campaign Name" formControlName="campaignName"><br>
         <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
@@ -26,16 +26,40 @@
 
         Duration: <select formControlName="duration">
         <option value="" disabled>Duration</option>
-        <option *ngFor="let dur of selectedDuration">{{dur.name}}</option>
+        <option *ngFor="let dur of selectedDuration" value={{dur.duration}}>{{dur.name}}</option>
       </select><br><br>
 
-        <input type="date" placeholder="From Date" formControlName="validFrom"><br>
-        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
-        <br><br>
+        <input [matDatepicker]="myDatepicker"
+               (dateChange)="addEvent($event)"
+               [min]="minDate" formControlName="validFrom" placeholder="From date" readonly>
+        <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #myDatepicker></mat-datepicker><br><br>
 
-        <input type="date" placeholder="To Date" formControlName="validTo"><br>
-        <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
-        <br><br>
+        <input [matDatepicker]="picker" [min]="MinimumDate" formControlName="validTo" placeholder="To date" readonly>
+        <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker><br><br>
+
+        <!--<mat-form-field>-->
+          <!--<input matInput [matDatepicker]="picker" placeholder="Choose a date">-->
+          <!--<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
+          <!--<mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>-->
+        <!--</mat-form-field>-->
+
+        <!--<md-input-container>-->
+          <!--<input mdInput [mdDatepicker]="pickerFrom" (mousedown)="pickerFrom.open()" readonly-->
+                 <!--formControlName="validFrom"-->
+                 <!--placeholder="From date">-->
+          <!--<button mdSuffix [mdDatepickerToggle]="pickerFrom"></button>-->
+        <!--</md-input-container>-->
+        <!--<md-datepicker #pickerFrom></md-datepicker>-->
+
+        <!--<input type="date" placeholder="From Date" formControlName="validFrom"><br>-->
+        <!--&lt;!&ndash;<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>&ndash;&gt;-->
+        <!--<br><br>-->
+
+        <!--<input type="date" placeholder="To Date" formControlName="validTo"><br>-->
+        <!--&lt;!&ndash;<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>&ndash;&gt;-->
+        <!--<br><br>-->
 
         Discount: <input type="text" placeholder="Discount(%)" formControlName="discount">
         <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
@@ -108,7 +132,8 @@
       <th>Discount</th>
     </tr>
 
-    <tr *ngFor="let people of peopleList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+    <tr
+      *ngFor="let people of peopleList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
       <td>{{people.email}}</td>
       <td>{{people.coupan}}</td>
       <td>{{(people.discount | number : '1.0-2') + ' % '}}</td>
@@ -116,7 +141,7 @@
   </table>
 
   <app-pagination (numberChange)="onPeopleNumber($event)"></app-pagination>
-<br>
+  <br>
   <button (click)="goBack()">Back</button>
 
 </div>
