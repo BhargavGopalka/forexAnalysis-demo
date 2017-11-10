@@ -4,34 +4,56 @@
   <hr>
   <br>
   <div>
-    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchDep(searchBox.value)"/>
+    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchNews(searchBox.value)"/>
   </div>
   <br>
+</div>
+
+<!-- Form for to add the latest news. -->
+<div>
+  <button (click)="showProperty()">Add</button>
+  <br><br>
+
+  <fieldset *ngIf="showForm"><br>
+    <form [formGroup]="newsForm" (submit)="addNews(newsForm.value)">
+      <br><br>
+
+      News: <textarea rows="8" cols="150" type="text" formControlName="news"></textarea><br><br>
+
+      <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
+      <button type="reset" (click)="goPrev()">Cancel</button>
+    </form>
+  </fieldset>
+  <br><br>
 </div>
 
 <!-- Latest News getting Data-->
 <div *ngIf="showTable">
   <table border="1">
     <tr>
-      <th>Question</th>
-      <th>Answer</th>
+      <th>News</th>
+      <th>Date</th>
       <th>Update</th>
       <th>Delete</th>
+      <th></th>
     </tr>
 
     <tr
-      *ngFor="let faq of faqList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
-      <td>{{faq.question}}</td>
-      <td>{{faq.answers}}</td>
+      *ngFor="let newsitem of newsList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      <td>{{newsitem.news}}</td>
+      <td>{{newsitem.createDate | date:'M/dd/yyyy, H:mm a'}}</td>
       <td>
-        <button (click)="showProperty(faq)">Edit</button>
+        <button (click)="showProperty(newsitem)">Edit</button>
       </td>
       <td>
-        <button (click)="removeCoupon(faq._id, i)">Delete</button>
+        <button (click)="removeNews(newsitem._id, i)">Delete</button>
+      </td>
+      <td>
+        <button (click)="enableDisableNews(newsitem)">{{newsitem.isEnable ? 'Enable' : 'Disable'}}</button>
       </td>
     </tr>
   </table>
 
-  <app-pagination *ngIf="showTable" (pageChange)="p = $event; getFaq()"
+  <app-pagination *ngIf="showTable" (pageChange)="p = $event; getNews()"
                   (numberChange)="onChange($event)"></app-pagination>
 </div>

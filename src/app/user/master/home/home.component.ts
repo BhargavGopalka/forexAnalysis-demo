@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
-import {HttpClient} from '@angular/common/http';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {PaginationComponent} from '../../../utility/shared-components/pagination/pagination.component';
+import {FormControl, FormGroup} from '@angular/forms';
+import {Constant} from '../../../utility/constants/constants';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +13,7 @@ export class HomeComponent implements OnInit {
   // pagination array
   p = 1;
   tPage = null;
-  pageItems = PaginationComponent.RecordsPerPage[0];
+  pageItems = Constant.recordsPerPage[0];
 
   showTable = true;
   showForm = false;
@@ -23,9 +22,7 @@ export class HomeComponent implements OnInit {
   countryList = [];
   numberForm: FormGroup;
 
-  constructor(private apiService: ApiManagerService,
-              private http: HttpClient,
-              private fb: FormBuilder) {
+  constructor(private apiService: ApiManagerService) {
   }
 
   ngOnInit() {
@@ -38,7 +35,7 @@ export class HomeComponent implements OnInit {
     this.getCountry();
   }
 
-  showProperty(numberData: any) {
+  showProperty(numberData) {
     this.showForm = true;
     this.showTable = false;
     console.log(numberData);
@@ -56,13 +53,13 @@ export class HomeComponent implements OnInit {
       contactNo: new FormControl(numberData.contactNo ? numberData.contactNo : ''),
       userType: new FormControl(numberData.userType ? numberData.userType : ''),
       discount: new FormControl(numberData.discount ? numberData.discount : ''),
-      userId: new FormControl(numberData.decoded.userId ? numberData.decoded.userId : ''),
+      userId: new FormControl(numberData._id ? numberData._id : ''),
       subscriptionPlanId: new FormControl(numberData.subscriptionPlanId ? numberData.subscriptionPlanId : '')
     });
   }
 
   getUserData() {
-    this.apiService.getAPI(`api/admin/customer/getUsers?limit=${this.pageItems}&page=${this.p}`)
+    this.apiService.getAPI(Constant.getUser + `?limit=${this.pageItems}&page=${this.p}`)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.numberList = res.data.customers;
@@ -70,7 +67,7 @@ export class HomeComponent implements OnInit {
   }
 
   updateData(formValue: any) {
-    this.apiService.postAPI(`api/admin/customer/updateUser`, formValue)
+    this.apiService.postAPI(Constant.updateUser, formValue)
       .subscribe(() => {
           this.getUserData();
           this.showTable = true;
@@ -82,14 +79,10 @@ export class HomeComponent implements OnInit {
   }
 
   getCountry() {
-    this.apiService.getHeaderAPI(`public/config`)
+    this.apiService.getHeaderAPI(Constant.config)
       .subscribe((res: any) => {
         this.countryList = res.data.country;
       });
-  }
-
-  onSelectCountry(value: string) {
-    const country_code = value;
   }
 
   goPrev() {

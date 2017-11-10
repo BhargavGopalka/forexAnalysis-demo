@@ -4,7 +4,7 @@
   <hr>
   <br>
   <div>
-    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchDep(searchBox.value)"/>
+    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchFaq(searchBox.value)"/>
   </div>
   <br>
 </div>
@@ -38,6 +38,7 @@
       <th>Answer</th>
       <th>Update</th>
       <th>Delete</th>
+      <th></th>
     </tr>
 
     <tr
@@ -48,7 +49,10 @@
         <button (click)="showProperty(faq)">Edit</button>
       </td>
       <td>
-        <button (click)="removeCoupon(faq._id, i)">Delete</button>
+        <button (click)="removeFaq(faq._id, i)">Delete</button>
+      </td>
+      <td>
+        <button (click)="enableDisableFaq(faq)">{{faq.isEnable ? 'Enable' : 'Disable'}}</button>
       </td>
     </tr>
   </table>

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
+import {Constant} from '../../../utility/constants/constants';
 
 @Component({
   selector: 'app-faq',
@@ -11,7 +12,7 @@ export class FaqComponent implements OnInit {
 
   p = 1;
   tPage: number;
-  pageItems = 10;
+  pageItems = Constant.recordsPerPage[0];
 
   showTable = true;
   showForm = false;
@@ -56,7 +57,7 @@ export class FaqComponent implements OnInit {
       });
   }
 
-  searchDep(value: string) {
+  searchFaq(value: string) {
     const searchAnswer = {'answers': -1};
     // ApiEndpoints.Department + `?records=all&sortBy=department&sortOrder=asc&search=${JSON.stringify(searchName)}
     this.apiService.getAPI(`api/admin/faqs/getAll?
@@ -94,10 +95,20 @@ export class FaqComponent implements OnInit {
     }
   }
 
-  removeCoupon(id: number, index: number): void {
+  removeFaq(id: number, index: number): void {
     this.apiService.postAPI(`api/admin/faqs/delete?id=${id}`)
       .subscribe(() => {
         this.faqList.splice(index, 1);
+      });
+  }
+
+  /* Enable Disable object */
+  enableDisableFaq(faqData: any) {
+    const enableDisableParam = {'id': faqData._id, isEnable: !faqData.isEnable};
+    this.apiService.postAPI(Constant.enaDisFaq, enableDisableParam)
+      .subscribe(() => {
+        (faqData.isEnable) = !(faqData.isEnable);
+        return faqData.isEnable;
       });
   }
 

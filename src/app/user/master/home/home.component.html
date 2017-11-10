@@ -16,7 +16,7 @@
     <br><br>
 
     <fieldset>
-    Country: <select formControlName="country" (change)="onSelectCountry($event.target.value)">
+    Country: <select formControlName="country">
     <!--<option value="" disabled>Select Country</option>-->
     <option *ngFor="let country of countryList" value={{country.dial_code}}>{{country.name}}</option>
   </select>
@@ -25,7 +25,7 @@
     <br><br>
 
       Country Code: <input type="text" formControlName="countryCode">
-    </fieldset>
+    </fieldset><br>
 
     Email: <input type="text" placeholder="Email Id" formControlName="email">
     <br><br>

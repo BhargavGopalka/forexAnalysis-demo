@@ -1,4 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Constant} from '../../constants/constants';
 
 @Component({
   selector: 'app-pagination',
@@ -7,7 +8,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-  public static RecordsPerPage: any[] = [10, 20, 30];
+  recordsArray = Constant.recordsPerPage;
 
   @Output() pageChange: EventEmitter<number> = new EventEmitter();
 
