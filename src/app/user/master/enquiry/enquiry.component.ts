@@ -14,6 +14,7 @@ export class EnquiryComponent implements OnInit {
   pageItems = Constant.recordsPerPage[0];
 
   enquiryList: any[] = [];
+  messageInput: string;
 
   constructor(private apiService: ApiManagerService) {
   }
@@ -29,7 +30,7 @@ export class EnquiryComponent implements OnInit {
 
   /* Getting data for Enquiry data grid */
   getEnquiry() {
-    this.apiService.getAPI(Constant.getIssue + `?page=${this.p}&limit=${this.pageItems}&`)
+    this.apiService.getAPI(Constant.getIssue, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.enquiryList = res.data.contactUs;
@@ -38,25 +39,27 @@ export class EnquiryComponent implements OnInit {
 
   /* Remove selected Enquiry */
   removeEnquiry(id) {
-      this.apiService.postAPI(Constant.deleteIssue + `?id=${id}`)
+    this.apiService.postAPI(Constant.deleteIssue + `?id=${id}`)
       .subscribe(() => {
         this.getEnquiry();
       });
   }
 
   /* Search Enquiry based on input */
-  searchEnquiry(value: string) {
-    if (value === '') {
-      this.getEnquiry();
-    } else {
-      const url = `?page=${this.p}&limit=${this.pageItems}&search=${value}&`;
-      this.apiService.getAPI(Constant.getIssue + url)
-        .subscribe(res => {
-          this.tPage = res.pager.totalRecords;
-          this.enquiryList = res.data.contactUs;
-        });
-    }
-    return this.enquiryList;
+  // searchEnquiry() {
+  //   this.apiService.getAPI(Constant.getIssue, this.params)
+  //     .subscribe(res => {
+  //       this.tPage = res.pager.totalRecords;
+  //       this.enquiryList = res.data.contactUs;
+  //     });
+  //   return this.enquiryList;
+  // }
+
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    this.messageInput ? params['search'] = this.messageInput : '';
+    return params;
   }
 
   /* On changing 'Records Per Page' number on Pagination */

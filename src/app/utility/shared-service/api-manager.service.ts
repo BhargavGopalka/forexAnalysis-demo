@@ -57,9 +57,16 @@ export class ApiManagerService {
   /* End */
 
   /* GET API - read only, get all records */
-  getAPI(endpoint: string): Observable<any> {
+  getAPI(endpoint: string, param?): Observable<any> {
+
+    const queryParam = new URLSearchParams();
+    for (const key in param) {
+      queryParam.set(key, param[key]);
+    }
+    const start = param ? '?' : '';
+
     this.showLoader();
-    return this.http.get<any>(Constant.baseUrl + endpoint, this.httpOptions)
+    return this.http.get<any>(Constant.baseUrl + endpoint + start + queryParam, this.httpOptions)
       .pipe(
         tap((res: any) => {
           this.extractData(res, false);

@@ -4,7 +4,7 @@
   <hr>
   <br>
   <div>
-    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchEnquiry(searchBox.value)"/>
+    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getEnquiry()"/>
   </div>
   <br>
 </div>

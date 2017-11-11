@@ -4,7 +4,7 @@
   <hr>
   <br>
   <div>
-    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchNews(searchBox.value)"/>
+    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getNews()"/>
   </div>
   <br>
 </div>
@@ -46,7 +46,7 @@
         <button (click)="showProperty(newsitem)">Edit</button>
       </td>
       <td>
-        <button (click)="removeNews(newsitem._id, i)">Delete</button>
+        <button (click)="removeNews(newsitem._id)">Delete</button>
       </td>
       <td>
         <button (click)="enableDisableNews(newsitem)">{{newsitem.isEnable ? 'Enable' : 'Disable'}}</button>

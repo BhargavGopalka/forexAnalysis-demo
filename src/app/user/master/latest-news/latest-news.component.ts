@@ -19,6 +19,7 @@ export class LatestNewsComponent implements OnInit {
 
   existingData = null;
   param: any;
+  messageInput: string;
 
   newsList: any[] = [];
 
@@ -52,7 +53,7 @@ export class LatestNewsComponent implements OnInit {
 
   /*Getting News-grid Data*/
   getNews() {
-    this.apiService.getAPI(Constant.getNews + `?page=${this.p}&limit=${this.pageItems}&`)
+    this.apiService.getAPI(Constant.getNews, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.newsList = res.data.news;
@@ -102,7 +103,7 @@ export class LatestNewsComponent implements OnInit {
   }
 
   /* Remove selected object */
-  removeNews(id, index: number): void {
+  removeNews(id): void {
     this.apiService.postAPI(Constant.deleteNews + `?id=${id}`)
       .subscribe(() => {
         this.getNews();
@@ -115,10 +116,15 @@ export class LatestNewsComponent implements OnInit {
     this.apiService.postAPI(Constant.enaDisNews, enableDisableParam)
       .subscribe(() => {
         (newsData.isEnable) = !(newsData.isEnable);
-      return newsData.isEnable;
-
+        return newsData.isEnable;
       });
+  }
 
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    this.messageInput ? params['search'] = this.messageInput : '';
+    return params;
   }
 
   /* On changing 'Records Per Page' number on Pagination */
