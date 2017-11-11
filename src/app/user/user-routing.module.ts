@@ -9,6 +9,7 @@ import {TradingGuideComponent} from "./master/trading-guide/trading-guide.compon
 import {CouponCodeComponent} from "./master/coupon-code/coupon-code.component";
 import {FaqComponent} from "./master/faq/faq.component";
 import {LatestNewsComponent} from "./master/latest-news/latest-news.component";
+import {EnquiryComponent} from './master/enquiry/enquiry.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,11 @@ const routes: Routes = [
   {
     path: 'news',
     component: LatestNewsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'enquiry',
+    component: EnquiryComponent,
     canActivate: [AuthGuard]
   }
 ];

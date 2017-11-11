@@ -1,0 +1,39 @@
+<div>
+  <br>
+  <h4>Issues</h4>
+  <hr>
+  <br>
+  <div>
+    <input #searchBox id="search-box" placeholder="Search ..." (keyup)="searchEnquiry(searchBox.value)"/>
+  </div>
+  <br>
+</div>
+
+<!-- Getting Enquiry DataGrid -->
+<div>
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Message</th>
+      <th>Issue</th>
+      <th>Date</th>
+      <th>Remove</th>
+    </tr>
+
+    <tr
+      *ngFor="let enquiry of enquiryList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }">
+      <td>{{enquiry.name}}</td>
+      <td>{{enquiry.email}}</td>
+      <td>{{enquiry.message}}</td>
+      <td>{{enquiry.issue}}</td>
+      <td>{{enquiry.createDate | date:'M/d/yyyy, H:mm a'}}</td>
+      <td>
+        <button (click)="removeEnquiry(enquiry._id)">Delete</button>
+      </td>
+    </tr>
+  </table>
+
+  <app-pagination (pageChange)="p = $event; getEnquiry()"
+                  (numberChange)="onChange($event)"></app-pagination>
+</div>

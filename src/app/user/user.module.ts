@@ -15,6 +15,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatFormFieldModule, MatInputModule, MatNativeDateModule} from '@angular/material';
 import {FaqComponent} from './master/faq/faq.component';
 import { LatestNewsComponent } from './master/latest-news/latest-news.component';
+import { EnquiryComponent } from './master/enquiry/enquiry.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { LatestNewsComponent } from './master/latest-news/latest-news.component'
     TradingGuideComponent,
     CouponCodeComponent,
     FaqComponent,
-    LatestNewsComponent
+    LatestNewsComponent,
+    EnquiryComponent
   ],
   exports: [HomeComponent, HeaderComponent]
 })

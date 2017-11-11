@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ApiManagerService} from "../../utility/shared-service/api-manager.service";
+import {ApiManagerService} from '../../utility/shared-service/api-manager.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,9 @@ export class HeaderComponent implements OnInit {
   isLoading = true;
 
   constructor(private appService: ApiManagerService,
-              private cdr: ChangeDetectorRef) { }
+              private cdr: ChangeDetectorRef,
+              private routes: Router) {
+  }
 
   ngOnInit() {
     this.initInitialMethods();
@@ -23,6 +26,11 @@ export class HeaderComponent implements OnInit {
       this.isLoading = isLoading;
       this.cdr.detectChanges();
     });
+  }
+
+  logOut() {
+    sessionStorage.clear();
+    this.routes.navigate(['login']);
   }
 
 }

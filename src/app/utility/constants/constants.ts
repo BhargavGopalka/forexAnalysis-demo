@@ -10,4 +10,6 @@ export class Constant {
   public static deleteNews = `api/admin/latestNews/delete`;
   public static enaDisNews = `api/admin/latestNews/enableDisable`;
   public static enaDisFaq = `api/admin/faqs/enableDisable`;
+  public static getIssue = `api/admin/contactUs/getAll`;
+  public static deleteIssue = `api/admin/contactUs/delete`;
 }
