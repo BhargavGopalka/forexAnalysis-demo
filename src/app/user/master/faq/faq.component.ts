@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Constant} from '../../../utility/constants/constants';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
+import {Faq} from './faq.model';
 
 @Component({
   selector: 'app-faq',
@@ -12,14 +13,15 @@ export class FaqComponent implements OnInit {
 
   p = 1;
   tPage: number;
-  pageItems = Constant.recordsPerPage[0];
+  pageItems = PaginationItems.initialRecords;
 
   showTable = true;
   showForm = false;
 
   existingData = null;
+  messageInput: string;
 
-  faqList: any[] = [];
+  faqList: Faq[] = [];
 
   faqForm: FormGroup;
 
@@ -50,55 +52,41 @@ export class FaqComponent implements OnInit {
   }
 
   getFaq() {
-    this.apiService.getAPI(`api/admin/faqs/getAll?page=${this.p}&limit=${this.pageItems}&`)
+    this.apiService.getAPI(Constant.getFaq, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.faqList = res.data.faqs;
       });
   }
 
-  searchFaq(value: string) {
-    const searchAnswer = {'answers': -1};
-    // ApiEndpoints.Department + `?records=all&sortBy=department&sortOrder=asc&search=${JSON.stringify(searchName)}
-    this.apiService.getAPI(`api/admin/faqs/getAll?
-    page=${this.p}&
-    limit=${this.pageItems}&
-    sort=${JSON.stringify(searchAnswer)}&
-    search=${value}&`)
-      .subscribe(res => {
-        this.faqList = res.data.faqs;
-        // console.log(this.departmentList);
-      });
-  }
-
   addFaq(formValue: any) {
     if (this.existingData == null) {
-      this.apiService.postAPI(`api/admin/faqs/add`, formValue)
+      this.apiService.postAPI(Constant.addFaq, formValue)
         .subscribe(() => {
             this.getFaq();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     } else {
-      this.apiService.postAPI(`api/admin/faqs/update`, formValue)
+      formValue['id'] = this.existingData._id;
+      this.apiService.postAPI(Constant.updateFaq, formValue)
         .subscribe(() => {
             this.getFaq();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     }
   }
 
-  removeFaq(id: number, index: number): void {
-    this.apiService.postAPI(`api/admin/faqs/delete?id=${id}`)
+  /* Delete FAQ */
+  removeFaq(id: number): void {
+    this.apiService.postAPI(Constant.deleteFaq + `?id=${id}`)
       .subscribe(() => {
-        this.faqList.splice(index, 1);
+        this.getFaq();
       });
   }
 
@@ -110,6 +98,13 @@ export class FaqComponent implements OnInit {
         (faqData.isEnable) = !(faqData.isEnable);
         return faqData.isEnable;
       });
+  }
+
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    this.messageInput ? params['search'] = this.messageInput : '';
+    return params;
   }
 
   onChange(value) {

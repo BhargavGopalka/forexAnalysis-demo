@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
+import {CouponCode} from './coupon-code.model';
 
 @Component({
   selector: 'app-coupon-code',
@@ -13,7 +15,7 @@ export class CouponCodeComponent implements OnInit {
 
   p = 1;
   tPage = null;
-  pageItems = 10;
+  pageItems = PaginationItems.initialRecords;
 
   showTable = true;
   showForm = false;
@@ -23,8 +25,9 @@ export class CouponCodeComponent implements OnInit {
   existingData = null;
   minDate = new Date();
   MinimumDate: any;
+  campaign: string;
 
-  couponsList = [];
+  couponsList: CouponCode[] = [];
   peopleList = [];
   planTypeList = [];
   selectedDuration = [];
@@ -51,14 +54,16 @@ export class CouponCodeComponent implements OnInit {
   }
 
   initial(couponData: any) {
+    if (couponData) {
+      this.onSelectPlanType(couponData.planType);
+    }
     this.couponForm = new FormGroup({
       campaignName: new FormControl(couponData ? couponData.campaignName : ''),
       planType: new FormControl(couponData ? couponData.planType : ''),
       duration: new FormControl(couponData ? couponData.duration : ''),
       validFrom: new FormControl(couponData ? couponData.validFrom : ''),
       validTo: new FormControl(couponData ? couponData.validTo : ''),
-      discount: new FormControl(couponData ? couponData.discount : ''),
-      id: new FormControl(couponData ? couponData._id : '')
+      discount: new FormControl(couponData ? couponData.discount : '')
     });
   }
 
@@ -76,30 +81,30 @@ export class CouponCodeComponent implements OnInit {
 
   addCoupon(formValue: any) {
     if (this.existingData == null) {
-      this.apiService.postAPI(`api/admin/coupanCode/add`, formValue)
+      this.apiService.postAPI(Constant.addCoupon, formValue)
         .subscribe(() => {
             this.getCoupon();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     } else {
-      this.apiService.postAPI(`api/admin/coupanCode/update`, formValue)
+      formValue['id'] = this.existingData._id; // Pass Id for selected object, for update API
+      this.apiService.postAPI(Constant.updateCoupon, formValue)
         .subscribe(() => {
             this.getCoupon();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     }
   }
 
+  /* Getting Coupon Data */
   getCoupon() {
-    this.apiService.getAPI(`api/admin/coupanCode/getAll?page=${this.p}&limit=${this.pageItems}&`)
+    this.apiService.getAPI(Constant.getCoupon, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.couponsList = res.data.campaign;
@@ -108,9 +113,7 @@ export class CouponCodeComponent implements OnInit {
 
   /*Getting Plan Types*/
   getPlanType() {
-    this.http.get(`http://104.236.11.8:3000/public/config`, {
-      headers: new HttpHeaders().set('x-access-token', '2e53a2427762250dfa56096ecab1b3b6'),
-    })
+    this.apiService.getPublicAPI(Constant.config)
       .subscribe((res: any) => {
         this.planTypeList = res.data.planType;
       });
@@ -119,9 +122,7 @@ export class CouponCodeComponent implements OnInit {
   /*Getting Duration based on changes on Plan Type*/
   onSelectPlanType(value: string) {
     if (+value === 4) {
-      this.http.get(`http://104.236.11.8:3000/public/config`, {
-        headers: new HttpHeaders().set('x-access-token', '2e53a2427762250dfa56096ecab1b3b6'),
-      })
+      this.apiService.getPublicAPI(Constant.config)
         .subscribe((res: any) => {
           this.selectedDuration = res.data.duration;
           this.anyDurationList();
@@ -137,15 +138,14 @@ export class CouponCodeComponent implements OnInit {
   anyDurationList() {
     for (let i = 0; i < this.selectedDuration.length; i++) {
       this.selectedDuration[i].duration = this.selectedDuration[i]['day'];
+      this.selectedDuration[i].durationType = this.selectedDuration[i]['name'];
       delete this.selectedDuration[i].key1;
     }
   }
 
   /*Getting Duration List*/
   getDuration() {
-    this.http.get(`http://104.236.11.8:3000/public/packages`, {
-      headers: new HttpHeaders().set('x-access-token', '2e53a2427762250dfa56096ecab1b3b6'),
-    })
+    this.apiService.getPublicAPI(Constant.packages)
       .subscribe((res: any) => {
         this.completeDurationList = res.data.Complete;
         this.signalDurationList = res.data.Signal;
@@ -169,20 +169,42 @@ export class CouponCodeComponent implements OnInit {
     // this.allDuration = this.durationList.reduce((a, b) => a.concat(b));
   }
 
-  removeCoupon(id: number, index: number): void {
-    this.apiService.postAPI(`api/admin/coupanCode/delete?id=${id}`)
+  removeCoupon(id: number): void {
+    this.apiService.postAPI(Constant.deleteCoupon + `?id=${id}`)
       .subscribe(() => {
-        this.couponsList.splice(index, 1);
+        this.getCoupon();
       });
+  }
+
+  checkMaxValue(value) {
+    debugger;
+    if (value.length < 3) {
+      debugger;
+      return true;
+    } else {
+      debugger;
+      let number = value;
+      number = number.substring(0, number.length - 1);
+      value = number;
+    }
+    return value;
   }
 
   addPeople(value) {
     this.peoplePage = true;
     this.peopleHide = false;
-    this.apiService.getAPI(`api/admin/coupanCode/coupan/getAll?page=${this.p}&limit=${this.pageItems}&campaignId=${value}&`)
+    this.campaign = value;
+    this.apiService.getAPI(Constant.getCouponPeople, this.params)
       .subscribe((res: any) => {
         this.peopleList = res.data.coupan;
       });
+  }
+
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    this.campaign ? params['campaignId'] = this.campaign : '';
+    return params;
   }
 
   goBack() {

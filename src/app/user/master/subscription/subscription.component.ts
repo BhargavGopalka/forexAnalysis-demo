@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
+import {Subscribe} from './subscribe.model';
 
 @Component({
   selector: 'app-subscription',
@@ -11,12 +13,12 @@ export class SubscriptionComponent implements OnInit {
 
   p = 1;
   tPage = null;
-  pageItems = 10;
+  pageItems = PaginationItems.initialRecords;
 
   showTable = true;
   showForm = false;
 
-  ssList = [];
+  ssList: Subscribe[] = [];
 
   existingData = null;
   selectedPrice: number;
@@ -37,6 +39,10 @@ export class SubscriptionComponent implements OnInit {
   }
 
   initial(subscribeData: any) {
+    if (subscribeData) {
+      this.selectPrice(subscribeData.price);
+      this.selectDiscount(subscribeData.discount);
+    }
     this.subscribeForm = new FormGroup({
       name: new FormControl(subscribeData ? subscribeData.name : ''),
       planType: new FormControl(subscribeData ? subscribeData.planType : ''),
@@ -44,8 +50,7 @@ export class SubscriptionComponent implements OnInit {
       duration: new FormControl(subscribeData ? subscribeData.duration : ''),
       price: new FormControl(subscribeData ? subscribeData.price : ''),
       discount: new FormControl(subscribeData ? subscribeData.discount : '0'),
-      discountedPrice: new FormControl(subscribeData ? subscribeData.discountedPrice : ''),
-      planId: new FormControl(subscribeData ? subscribeData._id : '')
+      discountedPrice: new FormControl({value: subscribeData ? subscribeData.discountedPrice : '', disabled: true})
     });
   }
 
@@ -64,12 +69,16 @@ export class SubscriptionComponent implements OnInit {
 
   selectPrice(valuePrice) {
     this.selectedPrice = +valuePrice;
-    this.afterDiscountPrice = this.selectedPrice;
+    if (this.selectedDiscount === 0) {
+      this.afterDiscountPrice = this.selectedPrice;
+    } else {
+      this.afterDiscountPrice = (this.selectedPrice - ((this.selectedPrice * this.selectedDiscount) / 100));
+    }
     return this.afterDiscountPrice;
   }
 
   getSubScription() {
-    this.apiService.getAPI(`api/admin/subscription/getPlans?limit=${this.pageItems}&page=${this.p}`)
+    this.apiService.getAPI(Constant.getSubscription, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
         this.ssList = res.data.subscriptions;
@@ -79,28 +88,42 @@ export class SubscriptionComponent implements OnInit {
   addSubscription(formValue: any) {
     if (this.subscribeForm.valid === true) {
       if (this.existingData == null) {
-        this.apiService.postAPI(`api/admin/subscription/addPlan`, formValue)
+        this.apiService.postAPI(Constant.addSubscription, formValue)
           .subscribe(() => {
               this.getSubScription();
-              this.showTable = true;
-              this.showForm = false;
+              this.goPrev();
             },
             msg => {
-              console.log(`Error: ${msg.status} ${msg.statusText}`);
+              console.log(msg.status);
             });
       } else {
-        // const url = `phone/${this.selectNumber.phone_id}`;
-        this.apiService.postAPI(`api/admin/subscription/updatePlan`, formValue)
+        formValue['planId'] = this.existingData._id;
+        this.apiService.postAPI(Constant.updateSubscription, formValue)
           .subscribe(() => {
               this.getSubScription();
-              this.showTable = true;
-              this.showForm = false;
+              this.goPrev();
             },
             msg => {
-              console.log(`Error: ${msg.status} ${msg.statusText}`);
+              console.log(msg.status);
             });
       }
     }
+  }
+
+  /* Enable Disable Subscription */
+  enableDisableSubscription(ssInfo: any) {
+    const enableDisableParam = {'planId': ssInfo._id, isEnable: !ssInfo.isEnable};
+    this.apiService.postAPI(Constant.enaDisSubscription, enableDisableParam)
+      .subscribe(() => {
+        (ssInfo.isEnable) = !(ssInfo.isEnable);
+        return ssInfo.isEnable;
+      });
+  }
+
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    return params;
   }
 
   onChange(value) {

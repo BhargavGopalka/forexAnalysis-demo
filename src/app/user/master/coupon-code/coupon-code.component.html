@@ -26,47 +26,22 @@
 
         Duration: <select formControlName="duration">
         <option value="" disabled>Duration</option>
-        <option *ngFor="let dur of selectedDuration" value={{dur.duration}}>{{dur.name}}</option>
+        <option *ngFor="let dur of selectedDuration" value={{dur.duration}}>{{dur.durationType}}</option>
       </select><br><br>
 
         <input [matDatepicker]="myDatepicker"
                (dateChange)="addEvent($event)"
-               [min]="minDate" formControlName="validFrom" placeholder="From date" readonly>
+               [min]="minDate" formControlName="validFrom" placeholder="From date">
         <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
         <mat-datepicker #myDatepicker></mat-datepicker><br><br>
 
-        <input [matDatepicker]="picker" [min]="MinimumDate" formControlName="validTo" placeholder="To date" readonly>
+        <input [matDatepicker]="picker" [min]="MinimumDate" formControlName="validTo" placeholder="To date">
         <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker><br><br>
 
-        <!--<mat-form-field>-->
-          <!--<input matInput [matDatepicker]="picker" placeholder="Choose a date">-->
-          <!--<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
-          <!--<mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>-->
-        <!--</mat-form-field>-->
-
-        <!--<md-input-container>-->
-          <!--<input mdInput [mdDatepicker]="pickerFrom" (mousedown)="pickerFrom.open()" readonly-->
-                 <!--formControlName="validFrom"-->
-                 <!--placeholder="From date">-->
-          <!--<button mdSuffix [mdDatepickerToggle]="pickerFrom"></button>-->
-        <!--</md-input-container>-->
-        <!--<md-datepicker #pickerFrom></md-datepicker>-->
-
-        <!--<input type="date" placeholder="From Date" formControlName="validFrom"><br>-->
-        <!--&lt;!&ndash;<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>&ndash;&gt;-->
-        <!--<br><br>-->
-
-        <!--<input type="date" placeholder="To Date" formControlName="validTo"><br>-->
-        <!--&lt;!&ndash;<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>&ndash;&gt;-->
-        <!--<br><br>-->
-
-        Discount: <input type="text" placeholder="Discount(%)" formControlName="discount">
+        Discount: <input type="text" placeholder="Discount(%)" formControlName="discount" (keyup)="checkMaxValue($event.target.value)" value="">
         <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
         <br><br>
-
-        <input type="text" formControlName="id" value="_id" hidden>
-
         <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
         <button type="reset" (click)="goPrev()">Cancel</button>
       </form>

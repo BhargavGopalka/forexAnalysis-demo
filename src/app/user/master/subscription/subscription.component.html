@@ -34,19 +34,20 @@
     <option value="365">Yearly</option>
   </select><br><br>
 
-    Price: <input type="text" placeholder="Price" formControlName="price" (change)="selectPrice($event.target.value)"><br>
+    Price: <input type="text" placeholder="Price" formControlName="price"
+                  (change)="selectPrice($event.target.value)"><br>
     <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
 
-    Discount: <input type="text" placeholder="Discount" formControlName="discount" (change)="selectDiscount($event.target.value)"><br>
+    Discount: <input type="text" placeholder="Discount" formControlName="discount"
+                     (change)="selectDiscount($event.target.value)"><br>
     <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
 
-    Discounted Price: <input type="text" placeholder="Discounted Price" formControlName="discountedPrice" value="{{afterDiscountPrice}}"><br>
+    Discounted Price: <input type="text" placeholder="Discounted Price" formControlName="discountedPrice"
+                             value="{{afterDiscountPrice}}"><br>
     <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
-
-    <input type="text" formControlName="planId" hidden>
 
     <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
     <button type="reset" (click)="goPrev()">Cancel</button>
@@ -66,6 +67,7 @@
       <th>Discount</th>
       <th>Discount Price</th>
       <th>Update</th>
+      <th></th>
     </tr>
 
     <tr
@@ -81,12 +83,12 @@
       <td>
         <button (click)="showProperty(ssInfo)">Edit</button>
       </td>
-      <!--<td>-->
-      <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
-      <!--</td>-->
+      <td>
+        <button (click)="enableDisableSubscription(ssInfo)">{{ssInfo.isEnable ? 'Enable' : 'Disable'}}</button>
+      </td>
     </tr>
   </table>
 
   <app-pagination *ngIf="showTable" (pageChange)="p = $event;getSubScription()"
-  (numberChange)="onChange($event)"></app-pagination>
+                  (numberChange)="onChange($event)"></app-pagination>
 </div>

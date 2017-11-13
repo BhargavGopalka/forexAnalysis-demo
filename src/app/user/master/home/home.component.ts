@@ -1,24 +1,26 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Constant} from '../../../utility/constants/constants';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
+import {User} from './user.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent implements OnInit {
 
-  // pagination array
+  // pagination Variables
   p = 1;
   tPage = null;
-  pageItems = Constant.recordsPerPage[0];
+  pageItems = PaginationItems.initialRecords;
 
   showTable = true;
   showForm = false;
 
-  numberList = [];
+  userList: User[] = [];
   countryList = [];
   numberForm: FormGroup;
 
@@ -27,7 +29,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMethod();
-    console.log(this.pageItems);
   }
 
   initializeMethod() {
@@ -35,10 +36,9 @@ export class HomeComponent implements OnInit {
     this.getCountry();
   }
 
-  showProperty(numberData) {
+  editUserDetail(numberData) {
     this.showForm = true;
     this.showTable = false;
-    console.log(numberData);
     this.initial(numberData);
   }
 
@@ -58,11 +58,12 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /* Getting User grid data */
   getUserData() {
-    this.apiService.getAPI(Constant.getUser + `?limit=${this.pageItems}&page=${this.p}`)
+    this.apiService.getAPI(Constant.getUser, this.params)
       .subscribe((res: any) => {
         this.tPage = res.pager.totalRecords;
-        this.numberList = res.data.customers;
+        this.userList = res.data.customers;
       });
   }
 
@@ -70,19 +71,34 @@ export class HomeComponent implements OnInit {
     this.apiService.postAPI(Constant.updateUser, formValue)
       .subscribe(() => {
           this.getUserData();
-          this.showTable = true;
-          this.showForm = false;
+          this.goPrev();
         },
         msg => {
-          console.log(`Error: ${msg.status} ${msg.statusText}`);
+          console.log(msg.status);
         });
   }
 
   getCountry() {
-    this.apiService.getHeaderAPI(Constant.config)
+    this.apiService.getPublicAPI(Constant.config)
       .subscribe((res: any) => {
         this.countryList = res.data.country;
       });
+  }
+
+  /* Enable Disable User Status */
+  enableDisableUser(numberInfo: any) {
+    const enableDisableParam = {'userId': numberInfo._id, isEnable: !numberInfo.isEnable};
+    this.apiService.postAPI(Constant.enaDisUser, enableDisableParam)
+      .subscribe(() => {
+        (numberInfo.isEnable) = !(numberInfo.isEnable);
+        return numberInfo.isEnable;
+      });
+  }
+
+  get params(): any {
+    let params = {};
+    params = {'page': this.p, 'limit': this.pageItems};
+    return params;
   }
 
   goPrev() {

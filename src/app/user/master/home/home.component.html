@@ -62,7 +62,7 @@
     </tr>
 
     <tr
-      *ngFor="let numberInfo of numberList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
+      *ngFor="let numberInfo of userList | paginate: { itemsPerPage: pageItems, currentPage: p, totalItems: tPage }; let i = index">
       <td>{{i + 1}}</td>
       <td>{{numberInfo.customerId}}</td>
       <td>{{numberInfo.firstName + " " + numberInfo.lastName}}</td>
@@ -72,9 +72,11 @@
       <td>{{numberInfo.countryCode + "-" + numberInfo.contactNo}}</td>
       <td>{{numberInfo.subscriptionName}}</td>
       <td>{{numberInfo.isSubscriptionActive}}</td>
-      <td>{{numberInfo.isEnable}}</td>
       <td>
-      <button (click)="showProperty(numberInfo)">Edit</button>
+        <button (click)="enableDisableUser(numberInfo)">{{numberInfo.isEnable ? 'Enable' : 'Disable'}}</button>
+      </td>
+      <td>
+      <button (click)="editUserDetail(numberInfo)">Edit</button>
       </td>
       <!--<td>-->
       <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->

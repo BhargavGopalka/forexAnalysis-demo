@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Constant} from '../../utility/constants/constants';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {ApiManagerService} from '../../utility/shared-service/api-manager.service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +17,8 @@ export class LoginComponent implements OnInit {
   passwordMessage: string;
   usernameMessage: string;
 
-  constructor(private fb: FormBuilder,
-              private http: HttpClient,
-              private routes: Router,
-              private toastr: ToastrService) {
+  constructor(private routes: Router,
+              private apiService: ApiManagerService) {
   }
 
   ngOnInit() {
@@ -61,16 +60,10 @@ export class LoginComponent implements OnInit {
   }
 
   login(formValue: any) {
-
-    const url = `public/adminLogin`;
-
     if (this.loginForm.valid === true) {
-      this.http.post(Constant.baseUrl + url, formValue, {
-        headers: new HttpHeaders().set('x-access-token', '2e53a2427762250dfa56096ecab1b3b6'),
-      })
+      this.apiService.postPublicAPI(Constant.adminLogin, formValue)
         .subscribe((res: any) => {
             console.log(res);
-            this.toastr.success('Welcome!');
             const token = res.token;
             sessionStorage.setItem('currentUser', token);
             if (res.status === 200) {

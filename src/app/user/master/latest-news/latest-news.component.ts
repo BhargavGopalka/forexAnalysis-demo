@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Constant} from '../../../utility/constants/constants';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {FormControl, FormGroup} from '@angular/forms';
+import {LatestNews} from './latest-news.model';
 
 @Component({
   selector: 'app-latest-news',
@@ -12,16 +13,15 @@ export class LatestNewsComponent implements OnInit {
 
   p = 1;
   tPage: number;
-  pageItems = Constant.recordsPerPage[0];
+  pageItems = PaginationItems.initialRecords;
 
   showTable = true;
   showForm = false;
 
   existingData = null;
-  param: any;
   messageInput: string;
 
-  newsList: any[] = [];
+  newsList: LatestNews[] = [];
 
   newsForm: FormGroup;
 
@@ -60,44 +60,26 @@ export class LatestNewsComponent implements OnInit {
       });
   }
 
-  /* Search NEWS based on input */
-  searchNews(value: string) {
-    if (value === '') {
-      this.getNews();
-    } else {
-      // const searchAnswer = {'createDate': -1};
-      const url = `?page=${this.p}&limit=${this.pageItems}&search=${value}&`;
-      this.apiService.getAPI(Constant.getNews + url)
-        .subscribe(res => {
-          this.tPage = res.pager.totalRecords;
-          this.newsList = res.data.news;
-        });
-    }
-    return this.newsList;
-  }
-
   /* Adding and Updating News */
   addNews(formValue: any) {
     if (this.existingData == null) {
       this.apiService.postAPI(Constant.addNews, formValue)
         .subscribe(() => {
             this.getNews();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     } else {
       formValue['id'] = this.existingData._id; // Pass Id for selected object, for update API
       this.apiService.postAPI(Constant.updateNews, formValue)
         .subscribe(() => {
             this.getNews();
-            this.showTable = true;
-            this.showForm = false;
+            this.goPrev();
           },
           msg => {
-            console.log(`Error: ${msg.status} ${msg.statusText}`);
+            console.log(msg.status);
           });
     }
   }

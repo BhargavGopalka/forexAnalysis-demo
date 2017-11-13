@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Constant} from '../../../utility/constants/constants';
+import {Constant, PaginationItems} from '../../../utility/constants/constants';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
+import {Enquiry} from './enquiry.model';
 
 @Component({
   selector: 'app-enquiry',
@@ -11,9 +12,9 @@ export class EnquiryComponent implements OnInit {
 
   p = 1;
   tPage: number;
-  pageItems = Constant.recordsPerPage[0];
+  pageItems = PaginationItems.initialRecords;
 
-  enquiryList: any[] = [];
+  enquiryList: Enquiry[] = [];
   messageInput: string;
 
   constructor(private apiService: ApiManagerService) {
@@ -44,16 +45,6 @@ export class EnquiryComponent implements OnInit {
         this.getEnquiry();
       });
   }
-
-  /* Search Enquiry based on input */
-  // searchEnquiry() {
-  //   this.apiService.getAPI(Constant.getIssue, this.params)
-  //     .subscribe(res => {
-  //       this.tPage = res.pager.totalRecords;
-  //       this.enquiryList = res.data.contactUs;
-  //     });
-  //   return this.enquiryList;
-  // }
 
   get params(): any {
     let params = {};

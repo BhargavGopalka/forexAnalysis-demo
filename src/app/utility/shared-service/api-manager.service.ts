@@ -79,7 +79,7 @@ export class ApiManagerService {
   }
 
   /*Get Api with static header*/
-  getHeaderAPI(endpoint: string): Observable<any> {
+  getPublicAPI(endpoint: string): Observable<any> {
     this.showLoader();
     return this.http.get(Constant.baseUrl + endpoint, this.staticHeader)
       .pipe(
@@ -112,6 +112,21 @@ export class ApiManagerService {
   postAPI(endpoint: string, formVal?: any): Observable<any> {
     this.showLoader();
     return this.http.post<any>(Constant.baseUrl + endpoint, formVal, this.httpOptions)
+      .pipe(
+        tap((res: any) => {
+          this.extractData(res, true);
+        }),
+        catchError(this.onCatch)
+      )
+      .finally(() => {
+        this.hideLoader();
+      });
+  }
+
+  /* Add record with static Header */
+  postPublicAPI(endpoint: string, formVal?: any): Observable<any> {
+    this.showLoader();
+    return this.http.post<any>(Constant.baseUrl + endpoint, formVal, this.staticHeader)
       .pipe(
         tap((res: any) => {
           this.extractData(res, true);
