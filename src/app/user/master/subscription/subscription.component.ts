@@ -24,6 +24,7 @@ export class SubscriptionComponent implements OnInit {
   selectedPrice: number;
   selectedDiscount = 0;
   afterDiscountPrice: number;
+  discountValue: number;
 
   subscribeForm: FormGroup;
 
@@ -38,7 +39,8 @@ export class SubscriptionComponent implements OnInit {
     this.getSubScription();
   }
 
-  initial(subscribeData: any) {
+  /* Will Build form */
+  formBuild(subscribeData: any) {
     if (subscribeData) {
       this.selectPrice(subscribeData.price);
       this.selectDiscount(subscribeData.discount);
@@ -54,10 +56,11 @@ export class SubscriptionComponent implements OnInit {
     });
   }
 
-  showProperty(subscribeData: any) {
+  /* Function will let program know, is it for Add or Edit details */
+  editAddSsDetail(subscribeData: any) {
     this.showForm = true;
     this.showTable = false;
-    this.initial(subscribeData);
+    this.formBuild(subscribeData);
     this.existingData = subscribeData;
   }
 
@@ -118,6 +121,18 @@ export class SubscriptionComponent implements OnInit {
         (ssInfo.isEnable) = !(ssInfo.isEnable);
         return ssInfo.isEnable;
       });
+  }
+
+  /* Checking maximum discount value */
+  checkMaxValue(value) {
+    if (value <= 100) {
+      return true;
+    } else {
+      // debugger;
+      value = value.substring(0, value.length - 1);
+    }
+    const control = this.subscribeForm.controls['discount'];
+    control.setValue(value);
   }
 
   get params(): any {

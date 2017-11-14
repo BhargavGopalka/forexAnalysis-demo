@@ -39,7 +39,10 @@
         <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker><br><br>
 
-        Discount: <input type="text" placeholder="Discount(%)" formControlName="discount" (keyup)="checkMaxValue($event.target.value)" value="">
+        Discount: <input type="text"
+                         placeholder="Discount(%)"
+                         formControlName="discount"
+                         (keyup)="checkMaxValue($event.target.value)">
         <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
         <br><br>
         <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>

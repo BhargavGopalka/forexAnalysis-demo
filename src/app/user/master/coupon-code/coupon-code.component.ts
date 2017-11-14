@@ -26,6 +26,7 @@ export class CouponCodeComponent implements OnInit {
   minDate = new Date();
   MinimumDate: any;
   campaign: string;
+  discountValue: number;
 
   couponsList: CouponCode[] = [];
   peopleList = [];
@@ -176,18 +177,15 @@ export class CouponCodeComponent implements OnInit {
       });
   }
 
+  /* Checking maximum discount value */
   checkMaxValue(value) {
-    debugger;
-    if (value.length < 3) {
-      debugger;
+    if (value <= 100) {
       return true;
     } else {
-      debugger;
-      let number = value;
-      number = number.substring(0, number.length - 1);
-      value = number;
+      value = value.substring(0, value.length - 1);
     }
-    return value;
+    const control = this.couponForm.controls['discount'];
+    control.setValue(value);
   }
 
   addPeople(value) {

@@ -110,7 +110,14 @@ export class ApiManagerService {
 
   /* Add record */
   postAPI(endpoint: string, formVal?: any): Observable<any> {
+    // const queryParam = new URLSearchParams();
+    // for (const key in param) {
+    //   queryParam.set(key, param[key]);
+    // }
+    // const start = param ? '?' : '';
+    //
     this.showLoader();
+    console.log(formVal);
     return this.http.post<any>(Constant.baseUrl + endpoint, formVal, this.httpOptions)
       .pipe(
         tap((res: any) => {

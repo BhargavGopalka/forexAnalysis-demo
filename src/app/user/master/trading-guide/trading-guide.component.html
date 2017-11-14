@@ -1,3 +1,115 @@
-<p>
-  trading-guide works!
-</p>
+<div>
+  <br>
+  <h4>Last updated: </h4>
+  <br>
+  <div>
+    <input [matDatepicker]="picker"
+           placeholder="Select Date"
+           (dateChange)="getTradingGuide($event.value)"
+           [(ngModel)]="todayDate" disabled>
+    <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker disabled="false"></mat-datepicker>
+  </div>
+  <br><br>
+  <br>
+  <div>
+    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getTradingGuide()"/>
+  </div>
+  <br>
+  <hr>
+</div>
+
+<!-- Form for to add Trading Guide. -->
+<div>
+  <button (click)="onClickAddTrading()">Add</button>
+  <br><br>
+
+  <fieldset *ngIf="addForm"><br>
+
+    <form [formGroup]="tradingGuideForm" (submit)="addTradingGuide(tradingGuideForm.value)">
+      <br><br>
+
+      Instrument: <select formControlName="instrumentType">
+      <option value="" disabled>Instrument</option>
+      <option>USOIL</option>
+      <option>GBPUSD</option>
+      <option>EURUSD</option>
+      <option>USDJPY</option>
+      <option>USDCAD</option>
+      <option>AUDUSD</option>
+      <option>NZDUSD</option>
+      <option>GBPJPY</option>
+      <option>EURJPY</option>
+      <option>EURGBP</option>
+      <option>GOLD</option>
+    </select><br><br>
+
+      ST Bias: <select formControlName="stBias">
+      <option value="" disabled>ST Bias</option>
+      <option>Up</option>
+      <option>Down</option>
+      <option>Neutral</option>
+      </select><br><br>
+
+      Targets: <input type="text" placeholder="Targets" formControlName="targets"><br><br>
+
+      Invalidation: <input type="text" placeholder="Invalidation" formControlName="invalidation"><br><br>
+
+      Support:
+      <input type="text" placeholder="S1" formControlName="s1"><br><br>
+      <input type="text" placeholder="S2" formControlName="s2"><br><br>
+      <input type="text" placeholder="S3" formControlName="s3"><br><br>
+
+      Resistance:
+      <input type="text" placeholder="R1" formControlName="r1"><br><br>
+      <input type="text" placeholder="R2" formControlName="r2"><br><br>
+      <input type="text" placeholder="R3" formControlName="r3"><br><br>
+
+      Description: <textarea rows="8" cols="150" type="text" formControlName="description"></textarea><br><br>
+
+      <input type="text" formControlName="isFav" hidden><br><br>
+
+
+      <button type="submit">Add</button>
+      <button type="reset" (click)="goPrev()">Cancel</button>
+    </form>
+  </fieldset>
+  <br><br>
+</div>
+
+<!-- Getting Trading Guide DataGrid -->
+<div *ngIf="dataGrid">
+  <table border="1">
+    <tr>
+      <th>Instrument</th>
+      <th>ST Bias</th>
+      <th>Targets</th>
+      <th>Invalidation</th>
+      <th>Support</th>
+      <th>Resistance</th>
+      <th>Favourite</th>
+      <!--<th>Edit</th>-->
+    </tr>
+
+    <tr
+      *ngFor="let trading of tradingList">
+      <td>{{trading.instrumentType}}</td>
+      <td>{{trading.stBias}}</td>
+      <td>{{trading.targets}}</td>
+      <td>{{trading.invalidation}}</td>
+      <td>{{'S1:' + trading.s1 + ' ,' +
+        ' ' + 'S2:' + trading.s2 + ' ,' +
+        ' ' + 'S3:' + trading.s3}}
+      </td>
+      <td>{{'R1:' + trading.r1 + ' ,' +
+        ' ' + 'R2:' + trading.r2 + ' ,' +
+        ' ' + 'R3:' + trading.r3}}
+      </td>
+      <td>{{trading.isFav}}</td>
+      <!--<td>-->
+      <!--<button (click)="removeEnquiry(trading)">Edit</button>-->
+      <!--</td>-->
+    </tr>
+  </table>
+
+</div>

@@ -1,6 +1,6 @@
 <br>
 
-<button (click)="showProperty(null)">Add</button>
+<button (click)="editAddSsDetail(null)">Add</button>
 <br>
 
 <fieldset *ngIf="showForm"><br>
@@ -40,13 +40,12 @@
     <br><br>
 
     Discount: <input type="text" placeholder="Discount" formControlName="discount"
-                     (change)="selectDiscount($event.target.value)"><br>
-    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
+                     (change)="selectDiscount($event.target.value)"
+                     (keyup)="checkMaxValue($event.target.value)"><br>
     <br><br>
 
     Discounted Price: <input type="text" placeholder="Discounted Price" formControlName="discountedPrice"
                              value="{{afterDiscountPrice}}"><br>
-    <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
     <br><br>
 
     <button type="submit">{{ existingData ? 'Update' : 'Add' }}</button>
@@ -81,7 +80,7 @@
       <td>{{ssInfo.discount + '%'}}</td>
       <td>{{'$' + ssInfo.discountedPrice}}</td>
       <td>
-        <button (click)="showProperty(ssInfo)">Edit</button>
+        <button (click)="editAddSsDetail(ssInfo)">Edit</button>
       </td>
       <td>
         <button (click)="enableDisableSubscription(ssInfo)">{{ssInfo.isEnable ? 'Enable' : 'Disable'}}</button>
