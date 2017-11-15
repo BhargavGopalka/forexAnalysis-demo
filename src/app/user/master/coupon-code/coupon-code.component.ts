@@ -13,20 +13,20 @@ import {CouponCode} from './coupon-code.model';
 })
 export class CouponCodeComponent implements OnInit {
 
+  /* Pagination Variables */
   p = 1;
   tPage = null;
   pageItems = PaginationItems.initialRecords;
 
-  showTable = true;
-  showForm = false;
-  peoplePage = false;
-  peopleHide = true;
+  viewDataGrid = true;
+  viewAddEditForm = false;
+  viewPeoplePage = false;
+  hidePeoplePage = true;
 
   existingData = null;
   minDate = new Date();
   MinimumDate: any;
   campaign: string;
-  discountValue: number;
 
   couponsList: CouponCode[] = [];
   peopleList = [];
@@ -40,21 +40,22 @@ export class CouponCodeComponent implements OnInit {
 
   couponForm: FormGroup;
 
-  constructor(private apiService: ApiManagerService,
-              private http: HttpClient) {
+  constructor(private apiService: ApiManagerService) {
   }
 
   ngOnInit() {
     this.initialFunction();
   }
 
+  /* Functions that will call Initially */
   initialFunction() {
     this.getCoupon();
     this.getPlanType();
     this.getDuration();
   }
 
-  initial(couponData: any) {
+  /* Building the form to Add or Edit details */
+  formBuild(couponData: any) {
     if (couponData) {
       this.onSelectPlanType(couponData.planType);
     }
@@ -68,18 +69,21 @@ export class CouponCodeComponent implements OnInit {
     });
   }
 
-  showProperty(couponData: any) {
-    this.showForm = true;
-    this.showTable = false;
-    this.initial(couponData);
+  /* Will call when Add or Edit button will be clicked */
+  addEditCouponDetail(couponData: any) {
+    this.viewAddEditForm = true;
+    this.viewDataGrid = false;
+    this.formBuild(couponData);
     this.existingData = couponData;
   }
 
-  addEvent(event: MatDatepickerInputEvent<Date>) {
-    this.couponForm.patchValue({validTo: ''});
-    this.MinimumDate = event.value;
+  /* Will call whenever date changes inside FormControl "validFrom" */
+  validFromDateChange(event: MatDatepickerInputEvent<Date>) {
+    this.couponForm.patchValue({validTo: ''});    /* if there is value inside validTo FormControl it will make it empty */
+    this.MinimumDate = event.value;                     /* setting minimum date for validTo FormControl */
   }
 
+  /* Add or Edit Coupon detail */
   addCoupon(formValue: any) {
     if (this.existingData == null) {
       this.apiService.postAPI(Constant.addCoupon, formValue)
@@ -136,6 +140,8 @@ export class CouponCodeComponent implements OnInit {
     return this.selectedDuration;
   }
 
+
+  /* Changing name of SelectedDuration's "day" and "name" key to "duration" and "durationType"  */
   anyDurationList() {
     for (let i = 0; i < this.selectedDuration.length; i++) {
       this.selectedDuration[i].duration = this.selectedDuration[i]['day'];
@@ -170,6 +176,7 @@ export class CouponCodeComponent implements OnInit {
     // this.allDuration = this.durationList.reduce((a, b) => a.concat(b));
   }
 
+  /* Delete Coupon */
   removeCoupon(id: number): void {
     this.apiService.postAPI(Constant.deleteCoupon + `?id=${id}`)
       .subscribe(() => {
@@ -188,9 +195,10 @@ export class CouponCodeComponent implements OnInit {
     control.setValue(value);
   }
 
+  /* on clicking add people button */
   addPeople(value) {
-    this.peoplePage = true;
-    this.peopleHide = false;
+    this.viewPeoplePage = true;
+    this.hidePeoplePage = false;
     this.campaign = value;
     this.apiService.getAPI(Constant.getCouponPeople, this.params)
       .subscribe((res: any) => {
@@ -198,6 +206,7 @@ export class CouponCodeComponent implements OnInit {
       });
   }
 
+  /* setting params to pass */
   get params(): any {
     let params = {};
     params = {'page': this.p, 'limit': this.pageItems};
@@ -205,17 +214,20 @@ export class CouponCodeComponent implements OnInit {
     return params;
   }
 
+  /* Leaving add people Page */
   goBack() {
-    this.peoplePage = false;
-    this.peopleHide = true;
+    this.viewPeoplePage = false;
+    this.hidePeoplePage = true;
     this.peopleList = [];
   }
-
+  
+  /* leaving Add/Edit form */
   goPrev() {
-    this.showForm = false;
-    this.showTable = true;
+    this.viewAddEditForm = false;
+    this.viewDataGrid = true;
   }
 
+  /* on Changing records per page number on Pagination */
   onChange(value) {
     this.p = 1;
     this.pageItems = +value;

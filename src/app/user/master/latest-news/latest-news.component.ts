@@ -11,19 +11,20 @@ import {LatestNews} from './latest-news.model';
 })
 export class LatestNewsComponent implements OnInit {
 
+  /* Pagination Variables */
   p = 1;
   tPage: number;
   pageItems = PaginationItems.initialRecords;
 
-  showTable = true;
-  showForm = false;
+  viewDataGrid = true;
+  viewAddEditForm = false;
 
   existingData = null;
-  messageInput: string;
 
   newsList: LatestNews[] = [];
 
   newsForm: FormGroup;
+  searchFilter: FormControl = new FormControl();
 
   constructor(private apiService: ApiManagerService) {
   }
@@ -32,20 +33,39 @@ export class LatestNewsComponent implements OnInit {
     this.initialFunctions();
   }
 
+  /* Functions that will call Initially */
   initialFunctions() {
     this.getNews();
+    this.searchNews(this.searchFilter);
   }
 
-  initial(newsData: any) {
+  /* Getting newsList on search Input */
+  searchNews(control: FormControl) {
+    control.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(() => {
+        return this.apiService.getAPI(Constant.getNews, this.params);
+      })
+      .subscribe((res: any) => {
+        this.tPage = res.pager.totalRecords;
+        this.newsList = res.data.news;
+      });
+  }
+
+
+  /* Building Form */
+  formBuild(newsData: any) {
     this.newsForm = new FormGroup({
       news: new FormControl(newsData ? newsData.news : '')
     });
   }
 
-  showProperty(newsData?: any) {
-    this.showForm = true;
-    this.showTable = false;
-    this.initial(newsData);
+  /* will call when clicked on Add or Edit button */
+  addEditDetail(newsData?: any) {
+    this.viewAddEditForm = true;
+    this.viewDataGrid = false;
+    this.formBuild(newsData);
     if (newsData) {
       this.existingData = newsData;
     }
@@ -72,7 +92,7 @@ export class LatestNewsComponent implements OnInit {
             console.log(msg.status);
           });
     } else {
-      formValue['id'] = this.existingData._id; // Pass Id for selected object, for update API
+      formValue['id'] = this.existingData._id;                  // Pass Id for selected object, for update API
       this.apiService.postAPI(Constant.updateNews, formValue)
         .subscribe(() => {
             this.getNews();
@@ -102,10 +122,11 @@ export class LatestNewsComponent implements OnInit {
       });
   }
 
+  /* setting params to pass */
   get params(): any {
     let params = {};
     params = {'page': this.p, 'limit': this.pageItems};
-    this.messageInput ? params['search'] = this.messageInput : '';
+    this.searchFilter.value ? params['search'] = this.searchFilter.value : '';
     return params;
   }
 
@@ -116,9 +137,10 @@ export class LatestNewsComponent implements OnInit {
     this.getNews();
   }
 
+  /* Leaving add/edit form view */
   goPrev() {
-    this.showForm = false;
-    this.showTable = true;
+    this.viewAddEditForm = false;
+    this.viewDataGrid = true;
   }
 
 }

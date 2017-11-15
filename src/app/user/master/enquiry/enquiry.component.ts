@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Constant, PaginationItems} from '../../../utility/constants/constants';
 import {ApiManagerService} from '../../../utility/shared-service/api-manager.service';
 import {Enquiry} from './enquiry.model';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-enquiry',
@@ -10,12 +11,13 @@ import {Enquiry} from './enquiry.model';
 })
 export class EnquiryComponent implements OnInit {
 
+  /* Pagination Variables */
   p = 1;
   tPage: number;
   pageItems = PaginationItems.initialRecords;
 
   enquiryList: Enquiry[] = [];
-  messageInput: string;
+  searchFilter: FormControl = new FormControl();
 
   constructor(private apiService: ApiManagerService) {
   }
@@ -27,6 +29,21 @@ export class EnquiryComponent implements OnInit {
   /* List of Function that will called Initially */
   initialFunctions() {
     this.getEnquiry();
+    this.searchEnquiry(this.searchFilter);
+  }
+
+  /* Getting EnquiryList based on search Input */
+  searchEnquiry(control: FormControl) {
+    control.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(() => {
+        return this.apiService.getAPI(Constant.getIssue, this.params);
+      })
+      .subscribe((res: any) => {
+        this.tPage = res.pager.totalRecords;
+        this.enquiryList = res.data.contactUs;
+      });
   }
 
   /* Getting data for Enquiry data grid */
@@ -46,10 +63,11 @@ export class EnquiryComponent implements OnInit {
       });
   }
 
+  /* setting params to pass */
   get params(): any {
     let params = {};
     params = {'page': this.p, 'limit': this.pageItems};
-    this.messageInput ? params['search'] = this.messageInput : '';
+    this.searchFilter.value ? params['search'] = this.searchFilter.value : '';
     return params;
   }
 

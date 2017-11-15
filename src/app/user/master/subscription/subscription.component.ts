@@ -11,12 +11,13 @@ import {Subscribe} from './subscribe.model';
 })
 export class SubscriptionComponent implements OnInit {
 
+  /* Pagination Variables */
   p = 1;
   tPage = null;
   pageItems = PaginationItems.initialRecords;
 
-  showTable = true;
-  showForm = false;
+  viewDataGrid = true;
+  viewAddEditForm = false;
 
   ssList: Subscribe[] = [];
 
@@ -24,7 +25,6 @@ export class SubscriptionComponent implements OnInit {
   selectedPrice: number;
   selectedDiscount = 0;
   afterDiscountPrice: number;
-  discountValue: number;
 
   subscribeForm: FormGroup;
 
@@ -35,11 +35,12 @@ export class SubscriptionComponent implements OnInit {
     this.initialFunction();
   }
 
+  /* Functions that will call Initially */
   initialFunction() {
     this.getSubScription();
   }
 
-  /* Will Build form */
+  /* Will Build the form */
   formBuild(subscribeData: any) {
     if (subscribeData) {
       this.selectPrice(subscribeData.price);
@@ -56,20 +57,22 @@ export class SubscriptionComponent implements OnInit {
     });
   }
 
-  /* Function will let program know, is it for Add or Edit details */
+  /* Function to Add or Edit details */
   editAddSsDetail(subscribeData: any) {
-    this.showForm = true;
-    this.showTable = false;
+    this.viewAddEditForm = true;
+    this.viewDataGrid = false;
     this.formBuild(subscribeData);
     this.existingData = subscribeData;
   }
 
+  /* Getting "Discounted Price" From "Price" and "Discount" field */
   selectDiscount(valueDis) {
     this.selectedDiscount = +valueDis;
     this.afterDiscountPrice = (this.selectedPrice - ((this.selectedPrice * this.selectedDiscount) / 100));
     return this.afterDiscountPrice;
   }
 
+  /* Getting "Discounted Price" based on "Price" field */
   selectPrice(valuePrice) {
     this.selectedPrice = +valuePrice;
     if (this.selectedDiscount === 0) {
@@ -80,6 +83,7 @@ export class SubscriptionComponent implements OnInit {
     return this.afterDiscountPrice;
   }
 
+  /* Getting subscription data */
   getSubScription() {
     this.apiService.getAPI(Constant.getSubscription, this.params)
       .subscribe((res: any) => {
@@ -88,6 +92,7 @@ export class SubscriptionComponent implements OnInit {
       });
   }
 
+  /* Add or Edit Subscription data */
   addSubscription(formValue: any) {
     if (this.subscribeForm.valid === true) {
       if (this.existingData == null) {
@@ -128,28 +133,30 @@ export class SubscriptionComponent implements OnInit {
     if (value <= 100) {
       return true;
     } else {
-      // debugger;
       value = value.substring(0, value.length - 1);
     }
     const control = this.subscribeForm.controls['discount'];
     control.setValue(value);
   }
 
+  /* Defining Params to pass */
   get params(): any {
     let params = {};
     params = {'page': this.p, 'limit': this.pageItems};
     return params;
   }
 
+  /* on Changing records per page value on pagination */
   onChange(value) {
     this.p = 1;
     this.pageItems = +value;
     this.getSubScription();
   }
 
+  /* Leaving Add/Edit Form / on Clicking at cancel button */
   goPrev() {
-    this.showForm = false;
-    this.showTable = true;
+    this.viewAddEditForm = false;
+    this.viewDataGrid = true;
   }
 
 }

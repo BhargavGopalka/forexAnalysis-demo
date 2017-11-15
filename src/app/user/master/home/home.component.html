@@ -1,5 +1,5 @@
 
-<fieldset *ngIf="showForm"><br>
+<fieldset *ngIf="addEditForm"><br>
 
   <form [formGroup]="numberForm" >
     <br><br>
@@ -45,7 +45,7 @@
 </fieldset>
 <br><br>
 
-<div *ngIf="showTable">
+<div *ngIf="dataGrid">
   <table border="1">
     <tr>
       <th>Index</th>
@@ -84,6 +84,6 @@
     </tr>
   </table>
 
-  <app-pagination *ngIf="showTable" (pageChange)="p = $event;getUserData()"
+  <app-pagination *ngIf="dataGrid" (pageChange)="p = $event;getUserData()"
   (numberChange)="onChange($event)"></app-pagination>
 </div>

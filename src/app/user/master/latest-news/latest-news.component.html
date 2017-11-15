@@ -4,17 +4,17 @@
   <hr>
   <br>
   <div>
-    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getNews()"/>
+    <input id="search-box" placeholder="Search ..." [formControl]="searchFilter"/>
   </div>
   <br>
 </div>
 
 <!-- Form for to add the latest news. -->
 <div>
-  <button (click)="showProperty()">Add</button>
+  <button (click)="addEditDetail()">Add</button>
   <br><br>
 
-  <fieldset *ngIf="showForm"><br>
+  <fieldset *ngIf="viewAddEditForm"><br>
     <form [formGroup]="newsForm" (submit)="addNews(newsForm.value)">
       <br><br>
 
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Latest News getting Data-->
-<div *ngIf="showTable">
+<div *ngIf="viewDataGrid">
   <table border="1">
     <tr>
       <th>News</th>
@@ -43,7 +43,7 @@
       <td>{{newsitem.news}}</td>
       <td>{{newsitem.createDate | date:'M/dd/yyyy, H:mm a'}}</td>
       <td>
-        <button (click)="showProperty(newsitem)">Edit</button>
+        <button (click)="addEditDetail(newsitem)">Edit</button>
       </td>
       <td>
         <button (click)="removeNews(newsitem._id)">Delete</button>
@@ -54,6 +54,6 @@
     </tr>
   </table>
 
-  <app-pagination *ngIf="showTable" (pageChange)="p = $event; getNews()"
+  <app-pagination *ngIf="viewDataGrid" (pageChange)="p = $event; getNews()"
                   (numberChange)="onChange($event)"></app-pagination>
 </div>

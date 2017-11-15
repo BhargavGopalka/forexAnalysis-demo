@@ -1,4 +1,4 @@
-<div *ngIf="peopleHide">
+<div *ngIf="hidePeoplePage">
 
   <div>
     <h4>Coupon Code Management</h4>
@@ -8,10 +8,10 @@
 
   <!--Add Form-->
   <div>
-    <button (click)="showProperty(null)">Add</button>
+    <button (click)="addEditCouponDetail(null)">Add</button>
     <br><br>
 
-    <fieldset *ngIf="showForm"><br>
+    <fieldset *ngIf="viewAddEditForm"><br>
       <form [formGroup]="couponForm" (submit)="addCoupon(couponForm.value)">
         <br><br>
         Campaign Name: <input type="text" placeholder="Campaign Name" formControlName="campaignName"><br>
@@ -30,7 +30,7 @@
       </select><br><br>
 
         <input [matDatepicker]="myDatepicker"
-               (dateChange)="addEvent($event)"
+               (dateChange)="validFromDateChange($event)"
                [min]="minDate" formControlName="validFrom" placeholder="From date">
         <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
         <mat-datepicker #myDatepicker></mat-datepicker><br><br>
@@ -42,6 +42,7 @@
         Discount: <input type="text"
                          placeholder="Discount(%)"
                          formControlName="discount"
+                         (keydown)="checkMaxValue($event.target.value)"
                          (keyup)="checkMaxValue($event.target.value)">
         <!--<div *ngIf="phoneValidation(numberForm.controls['phone_number'])">{{phoneMessage}}</div>-->
         <br><br>
@@ -54,7 +55,7 @@
 
 
   <!--Coupon Page Data-->
-  <div *ngIf="showTable">
+  <div *ngIf="viewDataGrid">
     <table border="1">
       <tr>
         <th>Campaign Name</th>
@@ -81,7 +82,7 @@
           <button (click)="removeCoupon(coupon._id, i)">Delete</button>
         </td>
         <td>
-          <button (click)="showProperty(coupon)">Edit</button>
+          <button (click)="addEditCouponDetail(coupon)">Edit</button>
         </td>
         <!--<td>-->
         <!--<button (click)="removeNumber(numberInfo.phone_id, i)">Delete</button>-->
@@ -89,13 +90,13 @@
       </tr>
     </table>
 
-    <app-pagination *ngIf="showTable" (pageChange)="p = $event;getCoupon()"
+    <app-pagination *ngIf="viewDataGrid" (pageChange)="p = $event;getCoupon()"
                     (numberChange)="onChange($event)"></app-pagination>
   </div>
 
 </div>
 
-<div *ngIf="peoplePage">
+<div *ngIf="viewPeoplePage">
   <br>
   <div>
     <h3>People</h3>

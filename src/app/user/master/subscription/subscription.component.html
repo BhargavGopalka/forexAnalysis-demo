@@ -3,7 +3,7 @@
 <button (click)="editAddSsDetail(null)">Add</button>
 <br>
 
-<fieldset *ngIf="showForm"><br>
+<fieldset *ngIf="viewAddEditForm"><br>
   <form [formGroup]="subscribeForm" (submit)="addSubscription(subscribeForm.value, subscribeForm.valid)">
     <br>
     <h3>Subscription Plans</h3>
@@ -40,7 +40,7 @@
     <br><br>
 
     Discount: <input type="text" placeholder="Discount" formControlName="discount"
-                     (change)="selectDiscount($event.target.value)"
+                     (change)="selectDiscount($event.target.value)" (keydown)="checkMaxValue($event.target.value)"
                      (keyup)="checkMaxValue($event.target.value)"><br>
     <br><br>
 
@@ -54,7 +54,7 @@
 </fieldset>
 <br><br>
 
-<div *ngIf="showTable">
+<div *ngIf="viewDataGrid">
   <table border="1">
     <tr>
       <th>Index</th>
@@ -88,6 +88,6 @@
     </tr>
   </table>
 
-  <app-pagination *ngIf="showTable" (pageChange)="p = $event;getSubScription()"
+  <app-pagination *ngIf="viewDataGrid" (pageChange)="p = $event;getSubScription()"
                   (numberChange)="onChange($event)"></app-pagination>
 </div>

@@ -4,17 +4,17 @@
   <hr>
   <br>
   <div>
-    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getFaq()"/>
+    <input id="search-box" placeholder="Search ..." [formControl]="searchFilter" />
   </div>
   <br>
 </div>
 
 <!--Add FAQ data-->
 <div>
-  <button (click)="showProperty(null)">Add</button>
+  <button (click)="addEditFaqDetail(null)">Add</button>
   <br><br>
 
-  <fieldset *ngIf="showForm"><br>
+  <fieldset *ngIf="viewAddEditForm"><br>
     <form [formGroup]="faqForm" (submit)="addFaq(faqForm.value)">
       <br><br>
       Question: <textarea rows="8" cols="150" type="text" formControlName="question"></textarea><br><br>
@@ -30,7 +30,7 @@
 </div>
 
 <!-- FAQ Data Table-->
-<div *ngIf="showTable">
+<div *ngIf="viewDataGrid">
   <table border="1">
     <tr>
       <th>Question</th>
@@ -45,7 +45,7 @@
       <td>{{faq.question}}</td>
       <td>{{faq.answers}}</td>
       <td>
-        <button (click)="showProperty(faq)">Edit</button>
+        <button (click)="addEditFaqDetail(faq)">Edit</button>
       </td>
       <td>
         <button (click)="removeFaq(faq._id, i)">Delete</button>
@@ -56,6 +56,6 @@
     </tr>
   </table>
 
-  <app-pagination *ngIf="showTable" (pageChange)="p = $event; getFaq()"
+  <app-pagination *ngIf="viewDataGrid" (pageChange)="p = $event; getFaq()"
                   (numberChange)="onChange($event)"></app-pagination>
 </div>

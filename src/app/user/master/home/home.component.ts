@@ -17,8 +17,8 @@ export class HomeComponent implements OnInit {
   tPage = null;
   pageItems = PaginationItems.initialRecords;
 
-  showTable = true;
-  showForm = false;
+  dataGrid = true;
+  addEditForm = false;
 
   userList: User[] = [];
   countryList = [];
@@ -28,21 +28,24 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initializeMethod();
+    this.initialMethods();
   }
 
-  initializeMethod() {
+  /* Methods that will call initially */
+  initialMethods() {
     this.getUserData();
     this.getCountry();
   }
 
+  /* when Edit button will be clicked */
   editUserDetail(numberData) {
-    this.showForm = true;
-    this.showTable = false;
-    this.initial(numberData);
+    this.addEditForm = true;
+    this.dataGrid = false;
+    this.buildForm(numberData);
   }
 
-  initial(numberData: any) {
+  /* Building Form Group */
+  buildForm(numberData: any) {
     this.numberForm = new FormGroup({
       firstName: new FormControl(numberData.firstName ? numberData.firstName : ''),
       lastName: new FormControl(numberData.lastName ? numberData.lastName : ''),
@@ -67,6 +70,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  /* Updating User Data */
   updateData(formValue: any) {
     this.apiService.postAPI(Constant.updateUser, formValue)
       .subscribe(() => {
@@ -78,6 +82,7 @@ export class HomeComponent implements OnInit {
         });
   }
 
+  /* Getting Country List */
   getCountry() {
     this.apiService.getPublicAPI(Constant.config)
       .subscribe((res: any) => {
@@ -95,17 +100,20 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  /* Defining Params to pass */
   get params(): any {
     let params = {};
     params = {'page': this.p, 'limit': this.pageItems};
     return params;
   }
 
+  /* Leaving Form view */
   goPrev() {
-    this.showForm = false;
-    this.showTable = true;
+    this.addEditForm = false;
+    this.dataGrid = true;
   }
 
+  /* on Changing pagination records per page number */
   onChange(value) {
     this.p = 1;
     this.pageItems = +value;

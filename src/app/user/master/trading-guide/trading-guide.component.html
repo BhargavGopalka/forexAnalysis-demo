@@ -5,15 +5,15 @@
   <div>
     <input [matDatepicker]="picker"
            placeholder="Select Date"
-           (dateChange)="getTradingGuide($event.value)"
-           [(ngModel)]="todayDate" disabled>
+           [(ngModel)]="selectedDate"
+           (dateChange)="getTradingGuide($event.value)" disabled>
     <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker disabled="false"></mat-datepicker>
   </div>
   <br><br>
   <br>
   <div>
-    <input id="search-box" placeholder="Search ..." [(ngModel)]="messageInput" (keyup)="getTradingGuide()"/>
+    <input id="search-box" placeholder="Search ..."  [formControl]="searchFilter"/>
   </div>
   <br>
   <hr>
