@@ -13,7 +13,7 @@
   <br><br>
   <br>
   <div>
-    <input id="search-box" placeholder="Search ..."  [formControl]="searchFilter"/>
+    <input id="search-box" placeholder="Search ..." [formControl]="searchFilter"/>
   </div>
   <br>
   <hr>
@@ -28,48 +28,63 @@
 
     <form [formGroup]="tradingGuideForm" (submit)="addTradingGuide(tradingGuideForm.value)">
       <br><br>
+      <fieldset>
+        <div formArrayName="tradingArray">
+          <div *ngFor="let trade of tradingGuideForm.get('tradingArray').controls; let i=index">
+            <div>
+              Trading-Data #{{ i + 1 }}
+            </div>
 
-      Instrument: <select formControlName="instrumentType">
-      <option value="" disabled>Instrument</option>
-      <option>USOIL</option>
-      <option>GBPUSD</option>
-      <option>EURUSD</option>
-      <option>USDJPY</option>
-      <option>USDCAD</option>
-      <option>AUDUSD</option>
-      <option>NZDUSD</option>
-      <option>GBPJPY</option>
-      <option>EURJPY</option>
-      <option>EURGBP</option>
-      <option>GOLD</option>
-    </select><br><br>
+            <div [formGroupName]="i">
 
-      ST Bias: <select formControlName="stBias">
-      <option value="" disabled>ST Bias</option>
-      <option>Up</option>
-      <option>Down</option>
-      <option>Neutral</option>
-      </select><br><br>
+              Instrument: <select formControlName="instrumentType">
+              <option value="" disabled>Instrument</option>
+              <option>USOIL</option>
+              <option>GBPUSD</option>
+              <option>EURUSD</option>
+              <option>USDJPY</option>
+              <option>USDCAD</option>
+              <option>AUDUSD</option>
+              <option>NZDUSD</option>
+              <option>GBPJPY</option>
+              <option>EURJPY</option>
+              <option>EURGBP</option>
+              <option>GOLD</option>
+            </select><br><br>
 
-      Targets: <input type="text" placeholder="Targets" formControlName="targets"><br><br>
+              ST Bias: <select formControlName="stBias">
+              <option value="" disabled>ST Bias</option>
+              <option>Up</option>
+              <option>Down</option>
+              <option>Neutral</option>
+            </select><br><br>
 
-      Invalidation: <input type="text" placeholder="Invalidation" formControlName="invalidation"><br><br>
+              Targets: <input type="text" placeholder="Targets" formControlName="targets"><br><br>
 
-      Support:
-      <input type="text" placeholder="S1" formControlName="s1"><br><br>
-      <input type="text" placeholder="S2" formControlName="s2"><br><br>
-      <input type="text" placeholder="S3" formControlName="s3"><br><br>
+              Invalidation: <input type="text" placeholder="Invalidation" formControlName="invalidation"><br><br>
 
-      Resistance:
-      <input type="text" placeholder="R1" formControlName="r1"><br><br>
-      <input type="text" placeholder="R2" formControlName="r2"><br><br>
-      <input type="text" placeholder="R3" formControlName="r3"><br><br>
+              Support:
+              <input type="text" placeholder="S1" formControlName="s1">
+              <input type="text" placeholder="S2" formControlName="s2">
+              <input type="text" placeholder="S3" formControlName="s3"><br><br>
 
-      Description: <textarea rows="8" cols="150" type="text" formControlName="description"></textarea><br><br>
+              Resistance:
+              <input type="text" placeholder="R1" formControlName="r1">
+              <input type="text" placeholder="R2" formControlName="r2">
+              <input type="text" placeholder="R3" formControlName="r3"><br><br>
 
-      <input type="text" formControlName="isFav" hidden><br><br>
+              Description: <textarea rows="8" cols="150" type="text" formControlName="description"></textarea><br><br>
 
+              Favourite: <input type="checkbox" formControlName="isFav"><br><br>
 
+              <button *ngIf="removeTrade" type="button" (click)="onRemoveTrade(i)">Remove Trade</button>
+              <br><br>
+
+            </div>
+          </div>
+          <button type="button" (click)="onAddTrade()">Add Trade</button>
+        </div>
+      </fieldset><br>
       <button type="submit">Add</button>
       <button type="reset" (click)="goPrev()">Cancel</button>
     </form>

@@ -3,7 +3,8 @@ import {ApiManagerService} from '../../../utility/shared-service/api-manager.ser
 import {Constant, PaginationItems} from '../../../utility/constants/constants';
 import {TradingGuide} from './trading-guide.model';
 import * as moment from 'moment';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {post} from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-trading-guide',
@@ -23,6 +24,7 @@ export class TradingGuideComponent implements OnInit {
 
   dataGrid: Boolean = false;
   addForm: Boolean = false;
+  removeTrade: Boolean = false;
 
   tradingGuideForm: FormGroup;
   searchFilter: FormControl = new FormControl();
@@ -59,9 +61,16 @@ export class TradingGuideComponent implements OnInit {
       });
   }
 
+  /* Creating form-array to add multiple values */
+  formArray() {
+    this.tradingGuideForm = new FormGroup({
+      tradingArray: new FormArray([this.formBuild()])
+    });
+  }
+
   /* Building the Form to Add Data */
   formBuild() {
-    this.tradingGuideForm = new FormGroup({
+    return new FormGroup({
       instrumentType: new FormControl(''),
       stBias: new FormControl(''),
       targets: new FormControl(''),
@@ -75,6 +84,17 @@ export class TradingGuideComponent implements OnInit {
       description: new FormControl(''),
       isFav: new FormControl(false),
     });
+  }
+
+  /* Add another trade data */
+  onAddTrade() {
+    (<FormArray>this.tradingGuideForm.get('tradingArray')).push(this.formBuild());
+    this.removeTrade = true;
+  }
+
+  /* remove selected trade data */
+  onRemoveTrade(i: number) {
+    (<FormArray>this.tradingGuideForm.get('tradingArray')).removeAt(i);
   }
 
   /* Getting Trading data */
@@ -102,15 +122,17 @@ export class TradingGuideComponent implements OnInit {
   onClickAddTrading() {
     this.addForm = true;
     this.dataGrid = false;
-    this.formBuild();
+    this.formArray();
   }
 
   /* Adding Trading Form Data*/
   addTradingGuide(formValue: any) {
+    const tradingArray = formValue.tradingArray;
     const postDataValue = {
       'dateString': moment(this.selectedDate).format('MM/DD/YYYY'),
-      'tradingData': formValue
+      'tradingData': JSON.stringify(tradingArray),
     };
+    console.log(postDataValue);
     this.apiService.postAPI(Constant.addTrading, postDataValue)
       .subscribe(() => {
           this.goPrev();
